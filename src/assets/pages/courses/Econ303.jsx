@@ -27,6 +27,18 @@ export default function Econ303() {
     return acc;
   }, {});
 
+  const orderedTypes = [
+    "problemSet",
+    "problemSetKeys",
+    "quiz",
+    "quizKeys",
+    "mid",
+    "midKeys",
+    "readingAssignment",
+    "readingAssignmentKeys",
+    "classProject"
+  ];
+
   return (
     <>
       <main>
@@ -93,20 +105,22 @@ export default function Econ303() {
                 </div>
                 <hr className="my-6 border-gray-200 dark:border-gray-700" />
               <main>
-                {Object.entries(groupedFiles).map(([type, files]) => (
-                  <div key={type}>
-                    <p className="leading-loose text-black dark:text-gray-50 font-semibold">{type.replace(/([a-z])([A-Z])/g, "$1 $2")}</p>
-                    <div className="flex flex-wrap gap-2">
-                      {files.map((file) => (
-                        <a key={file._id} href={file.link} target="_blank" rel="noopener noreferrer">
-                          <button className="px-6 py-2 mt-6 text-sm font-medium tracking-wider text-white capitalize transition-colors duration-300 transform bg-green-600 rounded-lg hover:bg-green-500 focus:outline-none focus:ring focus:ring-green-300 focus:ring-opacity-80">
-                            {file.title}
-                          </button>
-                        </a>
-                      ))}
+                {orderedTypes.map((type) => (
+                  groupedFiles[type] && (
+                    <div key={type}>
+                      <p className="leading-loose text-black dark:text-gray-50 font-semibold">{type.replace(/([a-z])([A-Z])/g, "$1 $2")}</p>
+                      <div className="flex flex-wrap gap-2">
+                        {groupedFiles[type].map((file) => (
+                          <a key={file._id} href={file.link} target="_blank" rel="noopener noreferrer">
+                            <button className="px-6 py-2 mt-6 text-sm font-medium tracking-wider text-white capitalize transition-colors duration-300 transform bg-green-600 rounded-lg hover:bg-green-500 focus:outline-none focus:ring focus:ring-green-300 focus:ring-opacity-80">
+                              {file.title}
+                            </button>
+                          </a>
+                        ))}
+                      </div>
+                      <hr className="my-6 border-gray-200 dark:border-gray-700" />
                     </div>
-                    <hr className="my-6 border-gray-200 dark:border-gray-700" />
-                  </div>
+                  )
                 ))}
               </main>
             </section>
