@@ -20,12 +20,14 @@ const Login = ({ setLoggedIn }) => {
     e.preventDefault();
     try {
       const response = await axios.post('https://mustofa-server.vercel.app/login', { email, password });
-if (response.data.message === "Login successful") {
-  localStorage.setItem('token', response.data.token);
-  setLoggedIn(true);
-  toast.success('Login successful!');
-  navigate('/add-files');
-}
+      if (response.data.token) {
+        localStorage.setItem('token', response.data.token);
+        setLoggedIn(true);
+        toast.success('Login successful!');
+        navigate('/add-files');
+      } else {
+        toast.error('Login failed. Please try again.');
+      }
     } catch (error) {
       toast.error('Login failed. Please try again.');
       console.error('Login failed:', error);

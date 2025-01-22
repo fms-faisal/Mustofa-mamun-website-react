@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import Sidebar from '../../components/Sidebar';
+import { Helmet } from 'react-helmet';
 
 export default function Econ303() {
   const [files, setFiles] = useState([]);
@@ -41,6 +42,44 @@ export default function Econ303() {
 
   return (
     <>
+    <Helmet>
+  <html lang="en" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ECON 303 | Mustofa Mamun</title>
+  <meta name="description" content="ECON 303 - Intermediate Macroeconomics course page of Mustofa Mamun" />
+  <meta name="keywords" content="ECON 303, Intermediate Macroeconomics, Mustofa Mamun, Economics, Fiscal Policy, Government Spending Multipliers" />
+  <meta name="author" content="Mustofa Mamun" />
+  <meta name="robots" content="index, follow" />
+  {/* Open Graph Tags */}
+  <meta property="og:title" content="ECON 303 | Mustofa Mamun" />
+  <meta property="og:description" content="ECON 303 - Intermediate Macroeconomics course page of Mustofa Mamun" />
+  <meta property="og:image" content="https://www.mustofamamun.com/images/profile_image.jpg" />
+  <meta property="og:url" content="https://www.mustofamamun.com/courses/Econ303.html" />
+  {/* Twitter Tags */}
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="ECON 303 | Mustofa Mamun" />
+  <meta name="twitter:description" content="ECON 303 - Intermediate Macroeconomics course page of Mustofa Mamun" />
+  <meta name="twitter:image" content="https://www.mustofamamun.com/images/profile_image.jpg" />
+  <link rel="icon" href="images/favicon.png" type="image/png" />
+  <link href="./output.css" rel="stylesheet" />
+  {/* Schema Markup */}
+  <script type="application/ld+json">
+    {`
+      {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": "ECON 303",
+        "description": "ECON 303 - Intermediate Macroeconomics course page of Mustofa Mamun",
+        "url": "https://www.mustofamamun.com/courses/Econ303.html",
+        "author": {
+          "@type": "Person",
+          "name": "Mustofa Mamun"
+        }
+      }
+    `}
+  </script>
+</Helmet>
       <main>
         <div className="flex w-full">
           {/* Reusable Sidebar */}

@@ -1,20 +1,48 @@
 import React from 'react';
+import { Helmet } from 'react-helmet';
 
 const Research = () => {
     return (
-        <div className="max-w-[95%] mx-auto dark:text-gray-50">
-            {/* Google Analytics Script */}
-            <script async src="https://www.googletagmanager.com/gtag/js?id=G-LEJ614GTC5"></script>
-            <script>
-                {`
-                    window.dataLayer = window.dataLayer || [];
-                    function gtag() {
-                        dataLayer.push(arguments);
+        <>        <Helmet>
+        <html lang="en" />
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Research | Mustofa Mamun</title>
+        <meta name="description" content="Research page of Mustofa Mamun" />
+        <meta name="keywords" content="Mustofa Mamun, Research, Macroeconomics, Fiscal Policy, Government Spending Multipliers, Heterogeneous Agents Model" />
+        <meta name="author" content="Mustofa Mamun" />
+        <meta name="robots" content="index, follow" />
+        {/* Open Graph Tags */}
+        <meta property="og:title" content="Research | Mustofa Mamun" />
+        <meta property="og:description" content="Research page of Mustofa Mamun" />
+        <meta property="og:image" content="https://www.mustofamamun.com/images/profile_image.jpg" />
+        <meta property="og:url" content="https://www.mustofamamun.com/research" />
+        {/* Twitter Tags */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Research | Mustofa Mamun" />
+        <meta name="twitter:description" content="Research page of Mustofa Mamun" />
+        <meta name="twitter:image" content="https://www.mustofamamun.com/images/profile_image.jpg" />
+        <link rel="icon" href="images/favicon.png" type="image/png" />
+        <link href="./output.css" rel="stylesheet" />
+        {/* Schema Markup */}
+        <script type="application/ld+json">
+            {`
+                {
+                    "@context": "https://schema.org",
+                    "@type": "WebPage",
+                    "name": "Research",
+                    "description": "Research page of Mustofa Mamun",
+                    "url": "https://www.mustofamamun.com/research",
+                    "author": {
+                        "@type": "Person",
+                        "name": "Mustofa Mamun"
                     }
-                    gtag("js", new Date());
-                    gtag("config", "G-LEJ614GTC5");
-                `}
-            </script>
+                }
+            `}
+        </script>
+    </Helmet>
+        <div className="max-w-[95%] mx-auto dark:text-gray-50">
+
 
             <main className="max-w-[90%] mx-auto">
                 
@@ -73,6 +101,7 @@ const Research = () => {
 
             <footer></footer>
         </div>
+        </>
     );
 };
 

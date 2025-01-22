@@ -1,8 +1,13 @@
+import { Helmet } from "react-helmet";
 import Sidebar from "../../components/Sidebar";
 
 export default function OnlineEcon2110() {
   return (
     <>
+    <Helmet>
+        <title>ECON 2110 (online) | Mustofa Mamun</title>
+        <meta name="description" content="ECON 2110 - Macroeconomic Principles (online) course page of Mustofa Mamun" />
+      </Helmet>
       <main>
         <div className="flex w-full">
           {/* Sidebar */}

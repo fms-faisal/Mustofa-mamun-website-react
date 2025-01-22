@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import Sidebar from "../components/Sidebar";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const CourseFiles = () => {
   const [files, setFiles] = useState([]);
@@ -14,9 +16,9 @@ const CourseFiles = () => {
   const [editFile, setEditFile] = useState(null);
 
   const courses = [
-    { value: "econ2110", label: "ECON 2110" },
-    { value: "econ303", label: "ECON 303" },
-    { value: "econ321", label: "ECON 321" }
+    { value: "econ2110", label: "ECON 2110 - Macroeconomic Principles" },
+    { value: "econ303", label: "ECON 303 - Intermediate Macroeconomics" },
+    { value: "econ321", label: "ECON 321 - Intermediate Microeconomic Theory" }
   ];
 
   const fileTypes = [
@@ -56,6 +58,7 @@ const CourseFiles = () => {
       await axios.post("https://mustofa-server.vercel.app/files", { ...newFile, course: selectedCourse });
       setNewFile({ title: "", link: "", type: "problemSet", course: selectedCourse });
       fetchFiles();
+      toast.success("File added successfully!");
     } catch (error) {
       console.error("Error adding file:", error);
     }
@@ -91,8 +94,21 @@ const CourseFiles = () => {
     return acc;
   }, {});
 
+  const orderedTypes = [
+    "problemSet",
+    "problemSetKeys",
+    "quiz",
+    "quizKeys",
+    "mid",
+    "midKeys",
+    "readingAssignment",
+    "readingAssignmentKeys",
+    "classProject"
+  ];
+
   return (
     <>
+      <ToastContainer />
       <main>
         <div className="flex w-full">
           {/* Reusable Sidebar */}
@@ -108,7 +124,7 @@ const CourseFiles = () => {
 
               <main>
                 {/* Course Selection */}
-                <div className="mb-6">
+                <div className="">
                   <label className="block mb-2 font-semibold text-2xl py-2">Select Course:</label>
                   <select
                     value={selectedCourse}
@@ -124,8 +140,8 @@ const CourseFiles = () => {
                 </div>
 
                 {/* Add File Form */}
-                <div className="mb-6 p-4 rounded-lg">
-                  <h2 className="text-lg font-semibold mb-2   ">Add New Material</h2>
+                <div className="mb-6 px-4 pb-4  rounded-lg">
+                  
                   <input
                     type="text"
                     placeholder="Title"
@@ -143,7 +159,7 @@ const CourseFiles = () => {
                   <select
                     value={newFile.type}
                     onChange={(e) => setNewFile({ ...newFile, type: e.target.value })}
-                    className="block w-full px-4 py-2 border rounded-lg mb-2"
+                    className="block w-full px-4 py-2 border font-semibold text-red-500 rounded-lg mb-2"
                   >
                     {fileTypes.map(type => (
                       <option key={type} value={type}>
@@ -164,6 +180,17 @@ const CourseFiles = () => {
                   <div className="fixed inset-0 flex items-center justify-center bg-black rounded-lg p-4 bg-opacity-50">
                     <div className="bg-white p-6 rounded shadow-md w-96">
                       <h2 className="text-lg font-semibold p-2 mb-2">Edit Material</h2>
+                      <select
+                        value={editFile.course}
+                        onChange={(e) => setEditFile({ ...editFile, course: e.target.value })}
+                        className="block w-full px-4 py-2 border rounded-lg mb-4"
+                      >
+                        {courses.map(course => (
+                          <option key={course.value} value={course.value}>
+                            {course.label}
+                          </option>
+                        ))}
+                      </select>
                       <input
                         type="text"
                         placeholder="Title"
@@ -189,17 +216,7 @@ const CourseFiles = () => {
                           </option>
                         ))}
                       </select>
-                      <select
-                        value={editFile.course}
-                        onChange={(e) => setEditFile({ ...editFile, course: e.target.value })}
-                        className="block w-full px-4 py-2 border rounded-lg mb-4"
-                      >
-                        {courses.map(course => (
-                          <option key={course.value} value={course.value}>
-                            {course.label}
-                          </option>
-                        ))}
-                      </select>
+                     
                       <div className="flex justify-end">
                         <button
                           onClick={handleUpdateFile}
@@ -220,40 +237,42 @@ const CourseFiles = () => {
 
                 {/* File List */}
                 <div className="space-y-6">
-                  {Object.entries(groupedFiles).map(([type, files]) => (
-                    <div key={type} className="bg-white px-4 rounded-lg">
-                      <h2 className="text-lg font-semibold mb-2 capitalize">
-                        {type.replace(/([a-z])([A-Z])/g, "$1 $2")}
-                      </h2>
-                      <div className="space-y-2 ">
-                        {files.map((file) => (
-                          <div key={file._id} className="flex items-center justify-between p-2 bg-gray-50 rounded-lg">
-                            <a
-                              href={file.link}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-gray-600 hover:text-gray-800 truncate"
-                            >
-                              {file.title}
-                            </a>
-                            <div className="flex space-x-3">
-                              <button
-                                onClick={() => setEditFile(file)}
-                                className="px-5 py-1 text-sm text-white bg-green-600 rounded hover:bg-green-500"
+                  {orderedTypes.map((type) => (
+                    groupedFiles[type] && (
+                      <div key={type} className="bg-white px-4 rounded-lg">
+                        <h2 className="text-lg font-semibold mb-2 capitalize">
+                          {type.replace(/([a-z])([A-Z])/g, "$1 $2")}
+                        </h2>
+                        <div className="space-y-2 ">
+                          {groupedFiles[type].map((file) => (
+                            <div key={file._id} className="flex items-center justify-between p-2 bg-gray-50 rounded-lg">
+                              <a
+                                href={file.link}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-gray-600 hover:text-gray-800 truncate"
                               >
-                                Edit
-                              </button>
-                              <button
-                                onClick={() => handleDeleteFile(file._id)}
-                                className="px-3 py-1 text-sm text-white bg-red-400 rounded hover:bg-red-600"
-                              >
-                                Delete
-                              </button>
+                                {file.title}
+                              </a>
+                              <div className="flex space-x-3">
+                                <button
+                                  onClick={() => setEditFile(file)}
+                                  className="px-5 py-1 text-sm text-white bg-green-600 rounded hover:bg-green-500"
+                                >
+                                  Edit
+                                </button>
+                                <button
+                                  onClick={() => handleDeleteFile(file._id)}
+                                  className="px-3 py-1 text-sm text-white bg-red-400 rounded hover:bg-red-600"
+                                >
+                                  Delete
+                                </button>
+                              </div>
                             </div>
-                          </div>
-                        ))}
+                          ))}
+                        </div>
                       </div>
-                    </div>
+                    )
                   ))}
                 </div>
               </main>
