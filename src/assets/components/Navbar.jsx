@@ -94,7 +94,7 @@ export default function Navbar({ loggedIn, setLoggedIn }) {
           </div>
 
           {/* Navbar End */}
-          <div className="navbar-end">
+          <div className="navbar-end font-semibold">
             {!loggedIn ? (
               <Link to="/login">
                 Login

@@ -33,7 +33,7 @@ const CourseFiles = () => {
 
   const fetchFiles = useCallback(async () => {
     try {
-      const response = await axios.get("http://localhost:5000/files", {
+      const response = await axios.get("https://mustofa-server.vercel.app/files", {
         params: { course: selectedCourse }
       });
       setFiles(response.data);
@@ -53,7 +53,7 @@ const CourseFiles = () => {
     }
 
     try {
-      await axios.post("http://localhost:5000/files", { ...newFile, course: selectedCourse });
+      await axios.post("https://mustofa-server.vercel.app/files", { ...newFile, course: selectedCourse });
       setNewFile({ title: "", link: "", type: "problemSet", course: selectedCourse });
       fetchFiles();
     } catch (error) {
@@ -68,7 +68,7 @@ const CourseFiles = () => {
     }
 
     try {
-      await axios.put(`http://localhost:5000/files/${editFile._id}`, editFile);
+      await axios.put(`https://mustofa-server.vercel.app/files/${editFile._id}`, editFile);
       setEditFile(null);
       fetchFiles();
     } catch (error) {
@@ -78,7 +78,7 @@ const CourseFiles = () => {
 
   const handleDeleteFile = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/files/${id}`);
+      await axios.delete(`https://mustofa-server.vercel.app/files/${id}`);
       fetchFiles();
     } catch (error) {
       console.error("Error deleting file:", error);

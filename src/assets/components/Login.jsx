@@ -19,7 +19,7 @@ const Login = ({ setLoggedIn }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:5000/login', { email, password });
+      const response = await axios.post('https://mustofa-server.vercel.app/login', { email, password });
 if (response.data.message === "Login successful") {
   localStorage.setItem('token', response.data.token);
   setLoggedIn(true);

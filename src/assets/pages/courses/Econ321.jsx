@@ -8,7 +8,7 @@ export default function Econ321() {
 
   const fetchFiles = useCallback(async () => {
     try {
-      const response = await axios.get("http://localhost:5000/files", {
+      const response = await axios.get("https://mustofa-server.vercel.app/files", {
         params: { course: selectedCourse }
       });
       setFiles(response.data);
