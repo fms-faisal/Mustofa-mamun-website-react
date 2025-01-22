@@ -17,8 +17,9 @@ const Research = () => {
             </script>
 
             <main className="max-w-[90%] mx-auto">
-                <hr className="py-6 border-gray-200 dark:border-gray-700" />
+                
                 <div className="mt-20">
+                <hr className="my-6 border-gray-200 dark:border-gray-700" />
                     <h4 className="leading-loose text-black dark:text-gray-50 font-semibold">
                         Government Spending Multipliers: The Size of the Fiscal Shock Matters
                     </h4>

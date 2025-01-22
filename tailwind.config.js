@@ -1,12 +1,10 @@
-module.exports = {
+export default {
   content: [
-    './src/**/*.{html,js,jsx,ts,tsx}', // Adjust paths as needed
-    './public/index.html',
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
     extend: {},
   },
-  plugins: [
-    require('daisyui'),
-  ],
-};
+  plugins: [],
+}

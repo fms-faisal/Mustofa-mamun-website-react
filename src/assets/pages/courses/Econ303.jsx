@@ -1,25 +1,48 @@
-import Sidebar from "../../components/Sidebar";
+import React, { useState, useEffect, useCallback } from 'react';
+import axios from 'axios';
+import Sidebar from '../../components/Sidebar';
 
 export default function Econ303() {
+  const [files, setFiles] = useState([]);
+  const [selectedCourse, setSelectedCourse] = useState("econ303");
+
+  const fetchFiles = useCallback(async () => {
+    try {
+      const response = await axios.get("http://localhost:5000/files", {
+        params: { course: selectedCourse }
+      });
+      setFiles(response.data);
+    } catch (error) {
+      console.error("Error fetching files:", error);
+    }
+  }, [selectedCourse]);
+
+  useEffect(() => {
+    fetchFiles();
+  }, [fetchFiles]);
+
+  const groupedFiles = files.reduce((acc, file) => {
+    if (!acc[file.type]) acc[file.type] = [];
+    acc[file.type].push(file);
+    return acc;
+  }, {});
+
   return (
     <>
-
       <main>
         <div className="flex w-full">
-          {/* Sidebar */}
-          <Sidebar/>
+          {/* Reusable Sidebar */}
+          <Sidebar />
 
           {/* Main Content */}
-          <div className="w-full lg:w-4/5 flex-grow px-4 mt-20 ">
+          <div className="w-full lg:w-4/5 flex-grow px-4 mt-20">
             <section className="max-w-2xl px-6 py-8 mx-auto bg-white dark:bg-gray-900">
               <header>
                 <h1 className="text-xl text-gray-700 dark:text-white font-bold">ECON 303 - Intermediate Macroeconomics</h1>
                 <hr className="my-6 border-gray-200 dark:border-gray-700" />
               </header>
-
-              <main>
-                {/* Class Schedule */}
-                <p className="mt-4 leading-loose border-2 px-4 rounded-lg border-green-200 md:-ml-4 text-green-600 font-semibold text-center md:flex">
+ {/* Class Schedule */}
+ <p className="mt-4 leading-loose border-2 px-4 rounded-lg border-green-200 md:-ml-4 text-green-600 font-semibold text-center md:flex">
                   MWF at 12:00 - 12:50 am in DSH-132
                 </p>
                 <a
@@ -68,60 +91,23 @@ export default function Econ303() {
                     <span className="text-blue-400">(Optional)</span>
                   </p>
                 </div>
-
                 <hr className="my-6 border-gray-200 dark:border-gray-700" />
-
-                {/* Problem Sets */}
-                <div>
-                  <p className="leading-loose text-black dark:text-gray-50 font-semibold">Problem Set</p>
-                  <div className="flex flex-wrap gap-2">
-                    <a
-                      href="https://drive.google.com/file/d/1O9PUVxoEzXWVst_JQcumt4TvmRsk92HP/view"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <button className="px-6 py-2 mt-6 text-sm font-medium tracking-wider text-white capitalize transition-colors duration-300 transform bg-green-600 rounded-lg hover:bg-green-500 focus:outline-none focus:ring focus:ring-green-300 focus:ring-opacity-80">
-                        PS 1
-                      </button>
-                    </a>
+              <main>
+                {Object.entries(groupedFiles).map(([type, files]) => (
+                  <div key={type}>
+                    <p className="leading-loose text-black dark:text-gray-50 font-semibold">{type.replace(/([a-z])([A-Z])/g, "$1 $2")}</p>
+                    <div className="flex flex-wrap gap-2">
+                      {files.map((file) => (
+                        <a key={file._id} href={file.link} target="_blank" rel="noopener noreferrer">
+                          <button className="px-6 py-2 mt-6 text-sm font-medium tracking-wider text-white capitalize transition-colors duration-300 transform bg-green-600 rounded-lg hover:bg-green-500 focus:outline-none focus:ring focus:ring-green-300 focus:ring-opacity-80">
+                            {file.title}
+                          </button>
+                        </a>
+                      ))}
+                    </div>
+                    <hr className="my-6 border-gray-200 dark:border-gray-700" />
                   </div>
-                </div>
-
-                <hr className="my-6 border-gray-200 dark:border-gray-700" />
-
-                {/* Class Project Ideas */}
-                <div>
-                  <p className="leading-loose text-black dark:text-gray-50 font-semibold">Class Project Ideas</p>
-                  <div className="flex flex-wrap gap-2">
-                    <a
-                      href="https://drive.google.com/file/d/1PQhh1w7Mv7HKi47y91zYLrvCMm9-wFfq/view"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <button className="px-6 py-2 mt-6 text-sm font-medium tracking-wider text-white capitalize transition-colors duration-300 transform bg-green-600 rounded-lg hover:bg-green-500 focus:outline-none focus:ring focus:ring-green-300 focus:ring-opacity-80">
-                        Topics
-                      </button>
-                    </a>
-                    <a
-                      href="https://drive.google.com/file/d/1Gywu9MxjybILDfvdxbT2EkRPW0ZPHL6g/view"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <button className="px-6 py-2 mt-6 text-sm font-medium tracking-wider text-white capitalize transition-colors duration-300 transform bg-green-600 rounded-lg hover:bg-green-500 focus:outline-none focus:ring focus:ring-green-300 focus:ring-opacity-80">
-                        Sample Videos
-                      </button>
-                    </a>
-                    <a
-                      href="https://drive.google.com/file/d/1aEka4ydfVzWRQFkDKkq5wzttlp_yirX6/view"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <button className="px-6 py-2 mt-6 text-sm font-medium tracking-wider text-white capitalize transition-colors duration-300 transform bg-green-600 rounded-lg hover:bg-green-500 focus:outline-none focus:ring focus:ring-green-300 focus:ring-opacity-80">
-                        Instructions
-                      </button>
-                    </a>
-                  </div>
-                </div>
+                ))}
               </main>
             </section>
           </div>
