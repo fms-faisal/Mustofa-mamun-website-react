@@ -1,10 +1,7 @@
 import { Link, NavLink } from 'react-router-dom';
 import React, { useState } from 'react';
-import Login from './Login';
 
 export default function Navbar({ loggedIn, setLoggedIn }) {
-  const [showLogin, setShowLogin] = useState(false);
-
   const handleLogout = () => {
     localStorage.removeItem('token');
     setLoggedIn(false);
@@ -99,9 +96,9 @@ export default function Navbar({ loggedIn, setLoggedIn }) {
           {/* Navbar End */}
           <div className="navbar-end">
             {!loggedIn ? (
-              <button onClick={() => setShowLogin(true)}>
+              <Link to="/login">
                 Login
-              </button>
+              </Link>
             ) : (
               <button onClick={handleLogout} className="bg-red-400 text-white font-semibold px-4 py-2 rounded">
                 Logout
@@ -110,16 +107,6 @@ export default function Navbar({ loggedIn, setLoggedIn }) {
           </div>
         </div>
       </nav>
-      {showLogin && (
-        <div>
-          <div>
-            <button onClick={() => setShowLogin(false)}>
-              ✕
-            </button>
-            <Login setLoggedIn={setLoggedIn} setShowLogin={setShowLogin} />
-          </div>
-        </div>
-      )}
     </header>
   );
 }

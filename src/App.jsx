@@ -11,6 +11,7 @@ import OnlineEcon2110 from './assets/pages/courses/OnlineEcon2110';
 import Econ1100 from './assets/pages/courses/Fordham/Econ1100';
 import Econ1200 from './assets/pages/courses/Fordham/Econ1200';
 import CourseFiles from './assets/pages/CourseFiles';
+import Login from './assets/components/Login';
 
 export default function App() {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -29,6 +30,7 @@ export default function App() {
         <Route path="/courses/Fordham/Econ1100.html" element={<Econ1100 />} />
         <Route path="/courses/Fordham/Econ1200.html" element={<Econ1200 />} />
         <Route path="/add-files" element={loggedIn ? <CourseFiles /> : <Home />} />
+        <Route path="/login" element={<Login setLoggedIn={setLoggedIn} />} />
       </Routes>
     </Router>
   );
