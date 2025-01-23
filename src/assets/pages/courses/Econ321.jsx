@@ -89,7 +89,7 @@ export default function Econ321() {
           <div className="w-full lg:w-4/5 flex-grow px-4 mt-20">
             <section className="max-w-2xl px-6 py-8 mx-auto bg-white dark:bg-gray-900">
               <header>
-                <h1 className="text-xl text-gray-700 dark:text-white font-bold">ECON 321 - Intermediate Microeconomic Theory</h1>
+                <h1 className="text-xl text-gray-700 dark:text-white font-bold">ECON 321 - Development Economics</h1>
                 <hr className="my-6 border-gray-200 dark:border-gray-700" />
               </header>
       

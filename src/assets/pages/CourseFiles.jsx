@@ -9,7 +9,7 @@ const CourseFiles = () => {
   const [selectedCourse, setSelectedCourse] = useState("econ2110");
   const [newFile, setNewFile] = useState({ 
     title: "", 
-    link: "", 
+    file: null, 
     type: "problemSet",
     course: "econ2110"
   });
@@ -18,7 +18,7 @@ const CourseFiles = () => {
   const courses = [
     { value: "econ2110", label: "ECON 2110 - Macroeconomic Principles" },
     { value: "econ303", label: "ECON 303 - Intermediate Macroeconomics" },
-    { value: "econ321", label: "ECON 321 - Intermediate Microeconomic Theory" }
+    { value: "econ321", label: "ECON 321 - Development Economics" }
   ];
 
   const fileTypes = [
@@ -48,15 +48,29 @@ const CourseFiles = () => {
     fetchFiles();
   }, [fetchFiles]);
 
+  const handleFileChange = (e) => {
+    setNewFile({ ...newFile, file: e.target.files[0] });
+  };
+
   const handleAddFile = async () => {
-    if (!newFile.title || !newFile.link || !newFile.type) {
+    if (!newFile.title || !newFile.file || !newFile.type) {
       alert("Please fill in all fields.");
       return;
     }
 
+    const formData = new FormData();
+    formData.append('file', newFile.file);
+    formData.append('title', newFile.title);
+    formData.append('type', newFile.type);
+    formData.append('course', selectedCourse);
+
     try {
-      await axios.post("https://mustofa-server.vercel.app/files", { ...newFile, course: selectedCourse });
-      setNewFile({ title: "", link: "", type: "problemSet", course: selectedCourse });
+      await axios.post("https://mustofa-server.vercel.app/files", formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      setNewFile({ title: "", file: null, type: "problemSet", course: selectedCourse });
       fetchFiles();
       toast.success("File added successfully!");
     } catch (error) {
@@ -65,13 +79,23 @@ const CourseFiles = () => {
   };
 
   const handleUpdateFile = async () => {
-    if (!editFile.title || !editFile.link || !editFile.course) {
+    if (!editFile.title || !editFile.file || !editFile.course) {
       alert("Please fill in all fields.");
       return;
     }
 
+    const formData = new FormData();
+    formData.append('file', editFile.file);
+    formData.append('title', editFile.title);
+    formData.append('type', editFile.type);
+    formData.append('course', editFile.course);
+
     try {
-      await axios.put(`https://mustofa-server.vercel.app/files/${editFile._id}`, editFile);
+      await axios.put(`https://mustofa-server.vercel.app/files/${editFile._id}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
       setEditFile(null);
       fetchFiles();
     } catch (error) {
@@ -111,10 +135,7 @@ const CourseFiles = () => {
       <ToastContainer />
       <main>
         <div className="flex w-full">
-          {/* Reusable Sidebar */}
           <Sidebar />
-
-          {/* Main Content */}
           <div className="w-full lg:w-4/5 flex-grow px-4 mt-4">
             <section className="max-w-2xl px-6 py-8 mx-auto bg-white dark:bg-gray-900">
               <header>
@@ -123,7 +144,6 @@ const CourseFiles = () => {
               </header>
 
               <main>
-                {/* Course Selection */}
                 <div className="">
                   <label className="block mb-2 font-semibold text-2xl py-2">Select Course:</label>
                   <select
@@ -139,9 +159,7 @@ const CourseFiles = () => {
                   </select>
                 </div>
 
-                {/* Add File Form */}
                 <div className="mb-6 px-4 pb-4  rounded-lg">
-                  
                   <input
                     type="text"
                     placeholder="Title"
@@ -150,10 +168,8 @@ const CourseFiles = () => {
                     className="block w-full px-4 py-2 mb-2 border rounded-lg"
                   />
                   <input
-                    type="text"
-                    placeholder="Link"
-                    value={newFile.link}
-                    onChange={(e) => setNewFile({ ...newFile, link: e.target.value })}
+                    type="file"
+                    onChange={handleFileChange}
                     className="block w-full px-4 py-2 mb-2 border rounded-lg"
                   />
                   <select
@@ -175,7 +191,6 @@ const CourseFiles = () => {
                   </button>
                 </div>
 
-                {/* Edit File Modal */}
                 {editFile && (
                   <div className="fixed inset-0 flex items-center justify-center bg-black rounded-lg p-4 bg-opacity-50">
                     <div className="bg-white p-6 rounded shadow-md w-96">
@@ -199,10 +214,8 @@ const CourseFiles = () => {
                         className="block w-full px-4 py-2 mb-2 border rounded-lg"
                       />
                       <input
-                        type="text"
-                        placeholder="Link"
-                        value={editFile.link}
-                        onChange={(e) => setEditFile({ ...editFile, link: e.target.value })}
+                        type="file"
+                        onChange={(e) => setEditFile({ ...editFile, file: e.target.files[0] })}
                         className="block w-full px-4 py-2 mb-2 border rounded-lg"
                       />
                       <select
@@ -235,7 +248,6 @@ const CourseFiles = () => {
                   </div>
                 )}
 
-                {/* File List */}
                 <div className="space-y-6">
                   {orderedTypes.map((type) => (
                     groupedFiles[type] && (
