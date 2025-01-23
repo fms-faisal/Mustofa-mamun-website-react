@@ -6,8 +6,9 @@ import { Helmet } from 'react-helmet';
 export default function Econ303() {
   const [files, setFiles] = useState([]);
   const [selectedCourse, setSelectedCourse] = useState("econ303");
-
+  const [loading, setLoading] = useState(true);
   const fetchFiles = useCallback(async () => {
+    setLoading(true);
     try {
       const response = await axios.get("https://mustofa-server.vercel.app/files", {
         params: { course: selectedCourse }
@@ -15,6 +16,8 @@ export default function Econ303() {
       setFiles(response.data);
     } catch (error) {
       console.error("Error fetching files:", error);
+    }finally {
+      setLoading(false);
     }
   }, [selectedCourse]);
 
@@ -29,15 +32,15 @@ export default function Econ303() {
   }, {});
 
   const orderedTypes = [
-    "problemSet",
-    "problemSetKeys",
-    "quiz",
-    "quizKeys",
-    "mid",
-    "midKeys",
-    "readingAssignment",
-    "readingAssignmentKeys",
-    "classProject"
+    "ProblemSet",
+    "ProblemSetKeys",
+    "Quiz",
+    "QuizKeys",
+    "Mid",
+    "MidKeys",
+    "ReadingAssignment",
+    "ReadingAssignmentKeys",
+    "ClassProject"
   ];
 
   return (
@@ -143,25 +146,41 @@ export default function Econ303() {
                   </p>
                 </div>
                 <hr className="my-6 border-gray-200 dark:border-gray-700" />
-              <main>
-                {orderedTypes.map((type) => (
-                  groupedFiles[type] && (
-                    <div key={type}>
-                      <p className="leading-loose text-black dark:text-gray-50 font-semibold">{type.replace(/([a-z])([A-Z])/g, "$1 $2")}</p>
-                      <div className="flex flex-wrap gap-2">
-                        {groupedFiles[type].map((file) => (
-                          <a key={file._id} href={file.link} target="_blank" rel="noopener noreferrer">
-                            <button className="px-6 py-2 mt-6 text-sm font-medium tracking-wider text-white capitalize transition-colors duration-300 transform bg-green-600 rounded-lg hover:bg-green-500 focus:outline-none focus:ring focus:ring-green-300 focus:ring-opacity-80">
-                              {file.title}
-                            </button>
-                          </a>
-                        ))}
-                      </div>
-                      <hr className="my-6 border-gray-200 dark:border-gray-700" />
-                    </div>
-                  )
-                ))}
-              </main>
+                <main>
+  {loading ? (
+    <div className="space-y-6">
+      {orderedTypes.map((type, index) => (
+        <div key={index} className="animate-pulse">
+          <p className="h-6 bg-gray-300 rounded w-1/4 mb-4"></p>
+          <div className="flex flex-wrap gap-2">
+            {[...Array(3)].map((_, idx) => (
+              <div key={idx} className="h-10 bg-gray-300 rounded w-1/4 mb-2"></div>
+            ))}
+          </div>
+          <hr className="my-6 border-gray-200 dark:border-gray-700" />
+        </div>
+      ))}
+    </div>
+  ) : (
+    orderedTypes.map((type) => (
+      groupedFiles[type] && (
+        <div key={type}>
+          <p className="leading-loose text-black dark:text-gray-50 font-semibold">{type.replace(/([a-z])([A-Z])/g, "$1 $2")}</p>
+          <div className="flex flex-wrap gap-2">
+            {groupedFiles[type].map((file) => (
+              <a key={file._id} href={file.link} target="_blank" rel="noopener noreferrer">
+                <button className="px-6 py-2 mt-6 text-sm font-medium tracking-wider text-white capitalize transition-colors duration-300 transform bg-green-600 rounded-lg hover:bg-green-500 focus:outline-none focus:ring focus:ring-green-300 focus:ring-opacity-80">
+                  {file.title}
+                </button>
+              </a>
+            ))}
+          </div>
+          <hr className="my-6 border-gray-200 dark:border-gray-700" />
+        </div>
+      )
+    ))
+  )}
+</main>
             </section>
           </div>
         </div>

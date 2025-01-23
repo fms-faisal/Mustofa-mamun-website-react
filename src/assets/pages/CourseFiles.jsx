@@ -22,15 +22,15 @@ const CourseFiles = () => {
   ];
 
   const fileTypes = [
-    "problemSet",
-    "problemSetKeys",
-    "quiz",
-    "quizKeys",
-    "mid",
-    "midKeys",
-    "readingAssignment",
-    "readingAssignmentKeys",
-    "classProject"
+    "ProblemSet",
+    "ProblemSetKeys",
+    "Quiz",
+    "QuizKeys",
+    "Mid",
+    "MidKeys",
+    "ReadingAssignment",
+    "ReadingAssignmentKeys",
+    "ClassProject"
   ];
 
   const fetchFiles = useCallback(async () => {
@@ -119,15 +119,15 @@ const CourseFiles = () => {
   }, {});
 
   const orderedTypes = [
-    "problemSet",
-    "problemSetKeys",
-    "quiz",
-    "quizKeys",
-    "mid",
-    "midKeys",
-    "readingAssignment",
-    "readingAssignmentKeys",
-    "classProject"
+    "ProblemSet",
+    "ProblemSetKeys",
+    "Quiz",
+    "QuizKeys",
+    "Mid",
+    "MidKeys",
+    "ReadingAssignment",
+    "ReadingAssignmentKeys",
+    "ClassProject"
   ];
 
   return (
