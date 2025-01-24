@@ -78,7 +78,7 @@ export default function Home() {
       </Helmet>
       <Navbar />
       <main>
-        <div className="w-[95%] px-6 lg:py-20 lg:mt-6 mx-auto">
+        <div className="w-[95%] px-6 py-10 lg:py-20 lg:mt-6 mx-auto">
           <div className="xl:flex lg:flex-row-reverse">
             <div className="xl:w-1/3 pb-10 lg:pb-0">
               <img

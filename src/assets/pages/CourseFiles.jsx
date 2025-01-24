@@ -10,7 +10,7 @@ const CourseFiles = () => {
   const [newFile, setNewFile] = useState({ 
     title: "", 
     file: null, 
-    type: "problemSet",
+    type: "ProblemSet",
     course: "econ2110"
   });
   const [editFile, setEditFile] = useState(null);
@@ -70,7 +70,7 @@ const CourseFiles = () => {
           'Content-Type': 'multipart/form-data'
         }
       });
-      setNewFile({ title: "", file: null, type: "problemSet", course: selectedCourse });
+      setNewFile({ title: "", file: null, type: "ProblemSet", course: selectedCourse });
       fetchFiles();
       toast.success("File added successfully!");
     } catch (error) {
