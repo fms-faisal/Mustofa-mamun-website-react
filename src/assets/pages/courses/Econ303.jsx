@@ -127,7 +127,7 @@ export default function Econ303() {
                 <p className="mt-4 leading-loose text-black dark:text-gray-50 font-semibold">Teaching Assistant: Samuel Asare</p>
                 <p className="leading-loose text-gray-600 dark:text-gray-50">PhD Student, Economics Department</p>
                 <p className="leading-loose text-gray-600 dark:text-gray-50">Office: Econ 2026</p>
-                <p className="leading-loose text-gray-600 dark:text-gray-50">Drop-in hours: Tuesday and Thursday (12:00 pm - 1:00 pm)</p>
+                <p className="leading-loose text-gray-600 dark:text-gray-50">Drop-in hours: Tuesdays and Thursdays [12:00 pm - 1:00 pm]</p>
                 <p className="leading-loose text-gray-600 dark:text-gray-50">Email: samasare@unm.edu</p>
                 <hr className="my-6 border-gray-200 dark:border-gray-700" />
 

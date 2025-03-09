@@ -21,6 +21,7 @@ export default function App() {
       <Navbar loggedIn={loggedIn} setLoggedIn={setLoggedIn} />
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/index.html" element={<Home />} />
         <Route path="/research" element={<Research />} />
         <Route path="/pages/teaching.html" element={<Teaching />} />
         <Route path="/courses/Econ2110.html" element={<Econ2110 />} />

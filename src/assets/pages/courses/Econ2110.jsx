@@ -132,7 +132,7 @@ export default function Econ2110() {
                       <p className="leading-loose text-gray-600 dark:text-gray-50">Office: ECON 2021</p>
                       <p className="leading-loose text-gray-600 dark:text-gray-50">
                         Drop-in hours: <br />
-                        1:00-2:00 pm [Tuesday & Friday]
+                        Tuesdays and Fridays [1:00 pm - 2:00 pm]
                       </p>
                       <p className="leading-loose text-gray-600 dark:text-gray-50">Email: zgurbanli@unm.edu</p>
                     </div>
@@ -163,7 +163,7 @@ export default function Econ2110() {
                       <p className="leading-loose text-gray-600 dark:text-gray-50">Office: ECON 2001</p>
                       <p className="leading-loose text-gray-600 dark:text-gray-50">
                         Drop-in hours: <br />
-                        10:00-11:00 pm [Wednesday & Friday]
+                        Wednesdays and Fridays [10:00-11:00 AM]
                       </p>
                       <p className="leading-loose text-gray-600 dark:text-gray-50">Email: saryal1@unm.edu</p>
                     </div>
