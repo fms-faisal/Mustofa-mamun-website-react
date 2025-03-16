@@ -95,11 +95,11 @@ export default function Home() {
                   </h2>
                   <ul className="mt-4 leading-loose text-gray-600 lg:text-left dark:text-gray-300 list-inside">
                     {[
-                      'Macroeconomics',
+                      'Macroeconomic Theory',
                       'Macroeconomic Policy',
-                      'Time Series Analysis',
-                      'Mathematical Methods',
-                      'Computational Economics',
+                      'Time Series Econometrics',
+                      'Mathematical Methods in Economics',
+                      'Computational Macroeconomics',
                     ].map((item) => (
                       <li key={item}>◇ {item}</li>
                     ))}
@@ -126,7 +126,7 @@ export default function Home() {
               <section>
                 <h1 className="text-2xl font-semibold text-gray-800 dark:text-white lg:text-3xl">Dr. Mustofa Mamun</h1>
                 <p className="leading-loose text-gray-600 text-lg dark:text-gray-300 mt-4 lg:text-2xl">
-                  I am a Macroeconomist specializing in Fiscal Policy and Macroeconomic Analysis. My research explores the short-run effects of
+                I am a Macroeconomist specializing in Macroeconomic Policy. My research explores the short-run effects of
                   unanticipated changes in government spending and their implications for economic policy.
                 </p>
                 <p className="leading-loose text-gray-600 text-lg dark:text-gray-300 mt-4 lg:text-2xl">

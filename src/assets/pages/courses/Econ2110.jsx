@@ -119,7 +119,7 @@ export default function Econ2110() {
                     <p className="mt-4 leading-loose border-2 px-2 rounded-lg border-green-200 md:-ml-4 text-green-600 font-semibold text-center md:flex">
                       MWF at 10:00-10:50 am in ANTHO-163
                     </p>
-                    <a href="https://drive.google.com/file/d/1r2eEL_Dzff1EAKtZtYrxYbVVLmBrY8PZ/view" target="_blank" rel="noopener noreferrer">
+                    <a href="https://drive.google.com/file/d/1W3a-ir9I9hps4HWtPFdM91dTs7dURPeh/view" target="_blank" rel="noopener noreferrer">
                       <p className="mt-4 leading-loose border-2 px-4 rounded-lg border-green-200 md:-ml-4 text-green-600 font-semibold text-center md:flex bg-green-50 hover:bg-green-100">
                         Syllabus
                       </p>
@@ -162,7 +162,7 @@ export default function Econ2110() {
                       <p className="leading-loose text-gray-600 dark:text-gray-50">PhD Student, Economics Department</p>
                       <p className="leading-loose text-gray-600 dark:text-gray-50">Office: ECON 2001</p>
                       <p className="leading-loose text-gray-600 dark:text-gray-50">
-                        Drop-in hours: [10:00-11:00 AM]<br />
+                        Drop-in hours: [10:00 - 11:00 AM]<br />
                         Wednesdays and Fridays 
                       </p>
                       <p className="leading-loose text-gray-600 dark:text-gray-50">Email: saryal1@unm.edu</p>
