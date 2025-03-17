@@ -100,7 +100,7 @@ export default function Econ303() {
                   MWF at 12:00 - 12:50 am in DSH-132
                 </p>
                 <a
-                  href="https://drive.google.com/file/d/1Cg7iY7RWhii45qg3cTtL0jh7G8aXul5C/view"
+                  href="https://drive.google.com/file/d/1uBQmgk6fM2AfD7cTGM6f1IuaWClrIXIX/view"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
