@@ -8,6 +8,10 @@ export default function CourseCard({ code, title, image, link, isOnline }) {
           <img
             src={image}
             alt={`${title} cover`}
+            onError={(e) => {
+              e.target.onerror = null; 
+              e.target.src="https://placehold.co/600x400/EEE/31343C?text=Image+Not+Found";
+            }}
             className="rounded-xl hidden lg:flex lg:h-36 lg:w-52 object-cover"
           />
         </figure>

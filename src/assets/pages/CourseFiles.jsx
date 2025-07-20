@@ -1,25 +1,37 @@
+
+// src/assets/pages/CourseFiles.jsx
 import React, { useState, useEffect, useCallback } from "react";
-import axios from "axios";
+import api from "../../api";
 import Sidebar from "../components/Sidebar";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const CourseFiles = () => {
   const [files, setFiles] = useState([]);
-  const [selectedCourse, setSelectedCourse] = useState("econ2110");
+  const [courses, setCourses] = useState([]);
+  const [selectedCourse, setSelectedCourse] = useState("");
   const [newFile, setNewFile] = useState({ 
     title: "", 
     file: null, 
     type: "ProblemSet",
-    course: "econ2110"
   });
   const [editFile, setEditFile] = useState(null);
 
-  const courses = [
-    { value: "econ2110", label: "ECON 2110 - Macroeconomic Principles" },
-    { value: "econ303", label: "ECON 303 - Intermediate Macroeconomics" },
-    { value: "econ321", label: "ECON 321 - Development Economics" }
-  ];
+  useEffect(() => {
+    const fetchCourses = async () => {
+        try {
+            const response = await api.get('/courses');
+            setCourses(response.data);
+            if (response.data.length > 0) {
+                setSelectedCourse(response.data[0].code.toLowerCase());
+            }
+        } catch (error) {
+            console.error("Error fetching courses:", error);
+            toast.error("Failed to load courses.");
+        }
+    };
+    fetchCourses();
+  }, []);
 
   const fileTypes = [
     "ProblemSet",
@@ -34,8 +46,9 @@ const CourseFiles = () => {
   ];
 
   const fetchFiles = useCallback(async () => {
+    if (!selectedCourse) return;
     try {
-      const response = await axios.get("https://mustofa-server.vercel.app/files", {
+      const response = await api.get("/files", {
         params: { course: selectedCourse }
       });
       setFiles(response.data);
@@ -45,8 +58,10 @@ const CourseFiles = () => {
   }, [selectedCourse]);
 
   useEffect(() => {
-    fetchFiles();
-  }, [fetchFiles]);
+    if (selectedCourse) {
+      fetchFiles();
+    }
+  }, [selectedCourse, fetchFiles]);
 
   const handleFileChange = (e) => {
     setNewFile({ ...newFile, file: e.target.files[0] });
@@ -65,12 +80,12 @@ const CourseFiles = () => {
     formData.append('course', selectedCourse);
 
     try {
-      await axios.post("https://mustofa-server.vercel.app/files", formData, {
+      await api.post("/files", formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
       });
-      setNewFile({ title: "", file: null, type: "ProblemSet", course: selectedCourse });
+      setNewFile({ title: "", file: null, type: "ProblemSet" });
       fetchFiles();
       toast.success("File added successfully!");
     } catch (error) {
@@ -91,7 +106,7 @@ const CourseFiles = () => {
     formData.append('course', editFile.course);
 
     try {
-      await axios.put(`https://mustofa-server.vercel.app/files/${editFile._id}`, formData, {
+      await api.put(`/files/${editFile._id}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -105,7 +120,7 @@ const CourseFiles = () => {
 
   const handleDeleteFile = async (id) => {
     try {
-      await axios.delete(`https://mustofa-server.vercel.app/files/${id}`);
+      await api.delete(`/files/${id}`);
       fetchFiles();
     } catch (error) {
       console.error("Error deleting file:", error);
@@ -152,8 +167,8 @@ const CourseFiles = () => {
                     className="block w-full px-4 py-2 my-4 border font-bold text-red-400 rounded-lg"
                   >
                     {courses.map(course => (
-                      <option key={course.value} value={course.value}>
-                        {course.label}
+                      <option key={course._id} value={course.code.toLowerCase()}>
+                        {course.code} - {course.title}
                       </option>
                     ))}
                   </select>
@@ -201,8 +216,8 @@ const CourseFiles = () => {
                         className="block w-full px-4 py-2 border rounded-lg mb-4"
                       >
                         {courses.map(course => (
-                          <option key={course.value} value={course.value}>
-                            {course.label}
+                          <option key={course._id} value={course.code.toLowerCase()}>
+                            {course.code} - {course.title}
                           </option>
                         ))}
                       </select>
@@ -229,7 +244,7 @@ const CourseFiles = () => {
                           </option>
                         ))}
                       </select>
-                     
+                      
                       <div className="flex justify-end">
                         <button
                           onClick={handleUpdateFile}

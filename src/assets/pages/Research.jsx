@@ -1,106 +1,161 @@
-import React from 'react';
+// src/assets/pages/Research.jsx
+import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
+import api from '../../api';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-const Research = () => {
+const Research = ({ loggedIn }) => {
+    const [researchItems, setResearchItems] = useState([]);
+    const [isEditing, setIsEditing] = useState(null); // Stores ID of item being edited
+    const [editData, setEditData] = useState({});
+    const [isAdding, setIsAdding] = useState(false);
+    const [newData, setNewData] = useState({ type: 'paper', title: '', abstract: '', content: '' });
+
+    const fetchResearch = async () => {
+        try {
+            const response = await api.get('/research');
+            setResearchItems(response.data);
+        } catch (error) {
+            console.error("Error fetching research:", error);
+        }
+    };
+
+    useEffect(() => {
+        fetchResearch();
+    }, []);
+
+    const handleSave = async (id) => {
+        const token = localStorage.getItem('token');
+        try {
+            await api.put(`/research/${id}`, editData, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            toast.success("Item updated!");
+            setIsEditing(null);
+            fetchResearch();
+        } catch (error) {
+            toast.error("Failed to update item.");
+        }
+    };
+
+    const handleDelete = async (id) => {
+        const token = localStorage.getItem('token');
+        if (window.confirm("Are you sure you want to delete this item?")) {
+            try {
+                await api.delete(`/research/${id}`, {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+                toast.success("Item deleted!");
+                fetchResearch();
+            } catch (error) {
+                toast.error("Failed to delete item.");
+            }
+        }
+    };
+    
+    const handleAdd = async () => {
+        const token = localStorage.getItem('token');
+        try {
+            await api.post('/research', newData, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            toast.success("Item added!");
+            setIsAdding(false);
+            setNewData({ type: 'paper', title: '', abstract: '', content: '' });
+            fetchResearch();
+        } catch (error) {
+            toast.error("Failed to add item.");
+        }
+    };
+
+    const papers = researchItems.filter(item => item.type === 'paper');
+    const publications = researchItems.filter(item => item.type === 'publication');
+
     return (
-        <>        <Helmet>
-        <html lang="en" />
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Research | Mustofa Mamun</title>
-        <meta name="description" content="Research page of Mustofa Mamun" />
-        <meta name="keywords" content="Mustofa Mamun, Research, Macroeconomics, Fiscal Policy, Government Spending Multipliers, Heterogeneous Agents Model" />
-        <meta name="author" content="Mustofa Mamun" />
-        <meta name="robots" content="index, follow" />
-        {/* Open Graph Tags */}
-        <meta property="og:title" content="Research | Mustofa Mamun" />
-        <meta property="og:description" content="Research page of Mustofa Mamun" />
-        <meta property="og:image" content="https://www.mustofamamun.com/images/profile_image.jpg" />
-        <meta property="og:url" content="https://www.mustofamamun.com/research" />
-        {/* Twitter Tags */}
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Research | Mustofa Mamun" />
-        <meta name="twitter:description" content="Research page of Mustofa Mamun" />
-        <meta name="twitter:image" content="https://www.mustofamamun.com/images/profile_image.jpg" />
-        <link rel="icon" href="images/favicon.png" type="image/png" />
-        <link href="./output.css" rel="stylesheet" />
-        {/* Schema Markup */}
-        <script type="application/ld+json">
-            {`
-                {
-                    "@context": "https://schema.org",
-                    "@type": "WebPage",
-                    "name": "Research",
-                    "description": "Research page of Mustofa Mamun",
-                    "url": "https://www.mustofamamun.com/research",
-                    "author": {
-                        "@type": "Person",
-                        "name": "Mustofa Mamun"
-                    }
-                }
-            `}
-        </script>
-    </Helmet>
-        <div className="max-w-[95%] mx-auto dark:text-gray-50">
-
-
-            <main className="max-w-[90%] mx-auto">
-                
-                <div className="mt-20">
-                <hr className="my-6 border-gray-200 dark:border-gray-700" />
-                    <h4 className="leading-loose text-black dark:text-gray-50 font-semibold">
-                        Government Spending Multipliers: The Size of the Fiscal Shock Matters
-                    </h4>
-                    <p className="leading-loose text-gray-600 dark:text-gray-300">
-                        Abstract: <br />
-                        Do all types of government spending generate similar multiplier effects? A standard non-linear DSGE model predicts that both government
-                        consumption and government investment multipliers are much smaller than one in the short run. I test those predictions on US data using
-                        Structural Vector Auto Regression (SVAR) and Local Projections (LP) methods. In order to estimate multipliers accurately, I isolate
-                        unanticipated changes in government spending. For transitory spending shocks, I find that the government investment multiplier is larger
-                        than one in the short run, and the government consumption multiplier is near zero. I explore a few possible reasons for this difference.
-                        First, private investment gets crowded out substantially after a government consumption shock but not after a government investment shock.
-                        Second, linear and symmetric regression methods fail to capture the non-linear and asymmetric effects of consumption shocks, leading to an
-                        underestimation of the consumption multiplier. I also find evidence that additional spending by state and local governments is more
-                        effective in raising output than that by the federal government. This finding is related to the non-linear effects of consumption shocks.
-                    </p>
-                </div>
-
-                <hr className="my-6 border-gray-200 dark:border-gray-700" />
-                <div className="mt-4">
-                    <h4 className="leading-loose text-black dark:text-gray-50 font-semibold">
-                        Federal Stimulus & Missing Payments: Insights from a Heterogeneous Agents Model
-                    </h4>
-                    <p className="leading-loose text-gray-600 dark:text-gray-300">
-                        Abstract: <br />
-                        When the US federal government undertakes a stimulus program, most eligible individuals receive their stimulus checks, but some miss their
-                        payments. Evidence suggests such occurrences are non-random and mostly concentrated at the bottom of the asset distribution. I use an
-                        economic model with a lump-sum tax-transfer system to study the effects of missing payments. If the unused funds are not returned to
-                        taxpayers or are delayed, missing payments can lower aggregate consumption, savings, and output in the short run. However, I show that if
-                        the tax refunds are processed sooner, missing payments do not reduce output in the short run. Rather, the positive effect on output gets
-                        stronger in the medium run than when all recipients get their payments. Since taxpayers are wealthier than those who miss payments and have
-                        a higher marginal propensity to save (MPS), they save a higher share of the total tax refunds. As a result, aggregate savings will increase
-                        and eventually translate into higher capital stock and output.
-                    </p>
-                </div>
-
-                <hr className="my-6 border-gray-200 dark:border-gray-700" />
-                <div className="mt-4">
-                    <h4 className="leading-loose text-black dark:text-white font-semibold uppercase">Publications</h4>
-                    <p className="leading-loose text-gray-600 dark:text-gray-300 mt-4">
-                        Ervin, D. E., Breshears, E. H., Frisvold, G. B., Hurley, T., Dentzman, K. E., Gunsolus, J. L., Jussaume, R. A., Owen, M. D. K., Norsworthy,
-                        J. K., Al Mamun, M. M., & Everman, W. (2019). Farmer Attitudes Toward Cooperative Approaches to Herbicide Resistance Management: A Common
-                        Pool Ecosystem Service Challenge. <i>Ecological Economics</i>, 157, 237–245. https://doi.org/10.1016/j.ecolecon.2018.11.023 ‌
-                    </p>
-                    <p className="leading-loose text-gray-600 dark:text-gray-300 mt-4 mb-8">
-                        Mohiuddin, Hossain and Bhuiya, Md Musfiqur Rahman and Mamun, Mustofa Mahmud Al, An Analysis of the Temperature Change of Dhaka City
-                        (September 14, 2014). Proceedings of 5th International Conference on Environmental Aspects of Bangladesh, ICEAB 2014 , Available at SSRN:
-                        https://ssrn.com/abstract=3522186
-                    </p>
-                </div>
-            </main>
-
-            <footer></footer>
-        </div>
+        <>
+            <Helmet>{/* ... */}</Helmet>
+            <ToastContainer />
+            <div className="max-w-[95%] mx-auto dark:text-gray-50">
+                <main className="max-w-[90%] mx-auto">
+                    <div className="mt-20">
+                        {papers.map(paper => (
+                            <div key={paper._id}>
+                                <hr className="my-6 border-gray-200 dark:border-gray-700" />
+                                {isEditing === paper._id ? (
+                                    <div className="space-y-2">
+                                        <input type="text" value={editData.title} onChange={(e) => setEditData({...editData, title: e.target.value})} className="w-full p-2 border rounded font-semibold"/>
+                                        <textarea value={editData.abstract} onChange={(e) => setEditData({...editData, abstract: e.target.value})} className="w-full h-40 p-2 border rounded"/>
+                                        <button onClick={() => handleSave(paper._id)} className="px-3 py-1 bg-green-500 text-white rounded">Save</button>
+                                        <button onClick={() => setIsEditing(null)} className="px-3 py-1 bg-gray-500 text-white rounded ml-2">Cancel</button>
+                                    </div>
+                                ) : (
+                                    <div>
+                                        <h4 className="leading-loose text-black dark:text-gray-50 font-semibold">{paper.title}</h4>
+                                        <p className="leading-loose text-gray-600 dark:text-gray-300">Abstract: <br />{paper.abstract}</p>
+                                        {loggedIn && (
+                                            <div className="mt-2 space-x-2">
+                                                <button onClick={() => { setIsEditing(paper._id); setEditData(paper); }} className="px-3 py-1 text-sm bg-blue-500 text-white rounded">Edit</button>
+                                                <button onClick={() => handleDelete(paper._id)} className="px-3 py-1 text-sm bg-red-500 text-white rounded">Delete</button>
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
+                        ))}
+                        <hr className="my-6 border-gray-200 dark:border-gray-700" />
+                        <div className="mt-4">
+                            <h4 className="leading-loose text-black dark:text-white font-semibold uppercase">Publications</h4>
+                            {publications.map(pub => (
+                                <div key={pub._id} className="mt-4">
+                                    {isEditing === pub._id ? (
+                                        <div className="space-y-2">
+                                            <textarea value={editData.content} onChange={(e) => setEditData({...editData, content: e.target.value})} className="w-full h-24 p-2 border rounded"/>
+                                            <button onClick={() => handleSave(pub._id)} className="px-3 py-1 bg-green-500 text-white rounded">Save</button>
+                                            <button onClick={() => setIsEditing(null)} className="px-3 py-1 bg-gray-500 text-white rounded ml-2">Cancel</button>
+                                        </div>
+                                    ) : (
+                                        <div>
+                                            <p className="leading-loose text-gray-600 dark:text-gray-300" dangerouslySetInnerHTML={{ __html: pub.content }}></p>
+                                            {loggedIn && (
+                                                <div className="mt-2 space-x-2">
+                                                    <button onClick={() => { setIsEditing(pub._id); setEditData(pub); }} className="px-3 py-1 text-sm bg-blue-500 text-white rounded">Edit</button>
+                                                    <button onClick={() => handleDelete(pub._id)} className="px-3 py-1 text-sm bg-red-500 text-white rounded">Delete</button>
+                                                </div>
+                                            )}
+                                        </div>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+                        {loggedIn && (
+                            <div className="mt-8">
+                                {isAdding ? (
+                                    <div className="p-4 border rounded space-y-2">
+                                        <h3 className="font-semibold">Add New Research Item</h3>
+                                        <select value={newData.type} onChange={(e) => setNewData({...newData, type: e.target.value})} className="w-full p-2 border rounded">
+                                            <option value="paper">Working Paper</option>
+                                            <option value="publication">Publication</option>
+                                        </select>
+                                        {newData.type === 'paper' ? (
+                                            <>
+                                                <input type="text" placeholder="Title" value={newData.title} onChange={(e) => setNewData({...newData, title: e.target.value})} className="w-full p-2 border rounded"/>
+                                                <textarea placeholder="Abstract" value={newData.abstract} onChange={(e) => setNewData({...newData, abstract: e.target.value})} className="w-full h-32 p-2 border rounded"/>
+                                            </>
+                                        ) : (
+                                            <textarea placeholder="Publication Content (HTML allowed)" value={newData.content} onChange={(e) => setNewData({...newData, content: e.target.value})} className="w-full h-24 p-2 border rounded"/>
+                                        )}
+                                        <button onClick={handleAdd} className="px-3 py-1 bg-green-500 text-white rounded">Add Item</button>
+                                        <button onClick={() => setIsAdding(false)} className="px-3 py-1 bg-gray-500 text-white rounded ml-2">Cancel</button>
+                                    </div>
+                                ) : (
+                                    <button onClick={() => setIsAdding(true)} className="px-4 py-2 bg-blue-500 text-white rounded">Add New Item</button>
+                                )}
+                            </div>
+                        )}
+                    </div>
+                </main>
+            </div>
         </>
     );
 };

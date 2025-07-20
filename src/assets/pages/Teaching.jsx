@@ -1,117 +1,123 @@
-import Navbar from '../components/Navbar';
+// src/assets/pages/Teaching.jsx
+import React, { useState, useEffect } from 'react';
+import api from '../../api';
 import CourseCard from '../components/CourseCard';
+import ConfirmModal from '../components/ConfirmModal';
 import { Helmet } from 'react-helmet';
+import { Link } from 'react-router-dom';
 
-export default function Teaching() {
-  // Courses data for University of New Mexico
-  const unmCourses = [
-    {
-      code: 'ECON 2110',
-      title: 'Macroeconomic Principles',
-      image: '/images/Macroeconomic-Principles-img.jpg',
-      link: '/courses/Econ2110.html',
-    },
-    {
-      code: 'ECON 303',
-      title: 'Intermediate Macroeconomics',
-      image: '/images/Intermediate_Macroeconomics_img.jpg',
-      link: '/courses/Econ303.html',
-    },
-    {
-      code: 'ECON 2110',
-      title: 'Macroeconomic Principles (Online)',
-      image: '/images/Macroeconomic-Principles-img.jpg',
-      link: '/courses/Online_Econ2110.html',
-    },
-    {
-      code: 'ECON 321',
-      title: 'Development Economics',
-      image: '/images/Development-Economics-img.jpg',
-      link: '/courses/Econ321.html',
-    },
-  ];
+const Teaching = ({ loggedIn }) => {
+  const [courses, setCourses] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [courseToDelete, setCourseToDelete] = useState(null);
 
-  // Courses data for Fordham University
-  const fordhamCourses = [
-    {
-      code: 'ECON 1100',
-      title: 'Principles of Macroeconomics',
-      image: '/images/Principles-of-Macroeconomics-Fordham-image.jpg',
-      link: '/courses/Fordham/Econ1100.html',
-    },
-    {
-      code: 'ECON 1200',
-      title: 'Principles of Microeconomics',
-      image: '/images/Principles-of-Microeconomics-Fordham-image.jpg',
-      link: '/courses/Fordham/Econ1200.html',
-    },
-  ];
+  const fetchCourses = async () => {
+    try {
+      const response = await api.get('/courses');
+      setCourses(response.data);
+    } catch (error) {
+      console.error("Error fetching courses:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchCourses();
+  }, []);
+
+  const handleDeleteClick = (courseId) => {
+    setCourseToDelete(courseId);
+    setIsModalOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+    try {
+      await api.delete(`/courses/${courseToDelete}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      fetchCourses();
+    } catch (error) {
+      console.error("Error deleting course:", error);
+    } finally {
+      setIsModalOpen(false);
+      setCourseToDelete(null);
+    }
+  };
+
+  const groupedCourses = courses.reduce((acc, course) => {
+    (acc[course.university] = acc[course.university] || []).push(course);
+    return acc;
+  }, {});
 
   return (
     <>
-        <Helmet>
-  <html lang="en" />
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Teaching | Mustofa Mamun</title>
-  <meta name="description" content="Teaching page of Mustofa Mamun" />
-  <meta name="keywords" content="Teaching, Mustofa Mamun, Economics, Macroeconomics, Microeconomics, Development Economics, University of New Mexico, Fordham University" />
-  <meta name="author" content="Mustofa Mamun" />
-  <meta name="robots" content="index, follow" />
-  {/* Open Graph Tags */}
-  <meta property="og:title" content="Teaching | Mustofa Mamun" />
-  <meta property="og:description" content="Teaching page of Mustofa Mamun. Courses taught include ECON 2110 - Macroeconomic Principles, ECON 303 - Intermediate Macroeconomics, ECON 321 - Development Economics, ECON 1100 - Principles of Macroeconomics, and ECON 1200 - Principles of Microeconomics." />
-  <meta property="og:image" content="https://www.mustofamamun.com/images/profile_image.jpg" />
-  <meta property="og:url" content="https://www.mustofamamun.com/teaching.html" />
-  {/* Twitter Tags */}
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Teaching | Mustofa Mamun" />
-  <meta name="twitter:description" content="Teaching page of Mustofa Mamun" />
-  <meta name="twitter:image" content="https://www.mustofamamun.com/images/profile_image.jpg" />
-  <link rel="icon" href="images/favicon.png" type="image/png" />
-  <link href="./output.css" rel="stylesheet" />
-  {/* Schema Markup */}
-  <script type="application/ld+json">
-    {`
-      {
-        "@context": "https://schema.org",
-        "@type": "WebPage",
-        "name": "Teaching",
-        "description": "Teaching page of Mustofa Mamun",
-        "url": "https://www.mustofamamun.com/teaching.html",
-        "author": {
-          "@type": "Person",
-          "name": "Mustofa Mamun"
-        }
-      }
-    `}
-  </script>
-</Helmet>
+      <Helmet>
+        <title>Teaching | Mustofa Mamun</title>
+        <meta name="description" content="Teaching page of Mustofa Mamun" />
+      </Helmet>
       <main className="pb-8">
-        {/* University of New Mexico Section */}
-        <div className="flex justify-center ">
-          <h1 className="text-xl font-semibold text-gray-800 dark:text-white p-3 px-6 border-2 border-green-200 rounded-lg shadow-md inline-block mt-20">
-            University of New Mexico
-          </h1>
-        </div>
-        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 mt-10 gap-4 mx-auto">
-          {unmCourses.map((course) => (
-            <CourseCard key={course.code} {...course} />
-          ))}
-        </div>
-
-        {/* Fordham University Section */}
-        <div className="flex justify-center mt-10">
-          <h1 className="text-xl font-semibold text-gray-800 dark:text-white p-3 px-6 border-2 border-green-200 rounded-lg shadow-md inline-block">
-            Fordham University
-          </h1>
-        </div>
-        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 mt-10 gap-4 mx-auto">
-          {fordhamCourses.map((course) => (
-            <CourseCard key={course.code} {...course} />
-          ))}
-        </div>
+        {loading ? (
+          <div className="text-center mt-20">Loading courses...</div>
+        ) : (
+          <>
+            {Object.keys(groupedCourses).map(university => (
+              <div key={university}>
+                <div className="flex justify-center mt-20">
+                  <h1 className="text-xl font-semibold text-gray-800 dark:text-white p-3 px-6 border-2 border-green-200 rounded-lg shadow-md inline-block">
+                    {university}
+                  </h1>
+                </div>
+                <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 mt-10 gap-4 mx-auto">
+                  {groupedCourses[university].map((course) => (
+                    <div key={course._id} className="relative">
+                       <CourseCard
+                        code={course.code}
+                        title={course.title}
+                        image={course.image}
+                        link={course.link}
+                      />
+                      {loggedIn && (
+                        <button
+                          onClick={() => handleDeleteClick(course._id)}
+                          className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 text-xs w-6 h-6 flex items-center justify-center"
+                        >
+                          X
+                        </button>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+            {loggedIn && (
+              <div className="flex justify-center mt-10">
+                <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 mx-auto">
+                    <Link to="/add-course">
+                        <div className="card bg-base-100 w-72 shadow-md hover:animate-pulse border-2 hover:border-b-8 hover:border-green-500 border-gray-100 mx-auto h-full flex items-center justify-center">
+                            <div className="card-body p-5 items-center text-center">
+                                <span className="text-6xl font-bold text-green-500">+</span>
+                                <p className="font-semibold text-gray-700 dark:text-gray-100">Add New Course</p>
+                            </div>
+                        </div>
+                    </Link>
+                </div>
+              </div>
+            )}
+          </>
+        )}
       </main>
+      <ConfirmModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onConfirm={confirmDelete}
+        message="Are you sure you want to delete this course?"
+      />
     </>
   );
-}
+};
+
+export default Teaching;
