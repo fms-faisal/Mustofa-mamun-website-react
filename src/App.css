@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+/* In your src/index.css file */
+body {
+  /* This creates a subtle gradient using your theme's colors */
+  background-image: linear-gradient(to top right, hsl(var(--b2)), hsl(var(--b1)));
+  background-attachment: fixed;
+}

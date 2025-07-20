@@ -47,61 +47,20 @@ export default function Home({ loggedIn }) {
     setEditData(prev => ({ ...prev, [listName]: e.target.value.split('\n') }));
   };
 
-  if (!profile) return <div>Loading...</div>;
+  if (!profile) return <div className="flex justify-center items-center h-screen">Loading...</div>;
 
   return (
     <>
       <Helmet>
-        {/* Helmet content remains the same */}
+        <title>Mustofa Mamun | Macroeconomist</title>
+        <meta name="description" content="The official website of Mustofa Mamun, a macroeconomist specializing in research and teaching." />
       </Helmet>
-      <ToastContainer />
-      <main>
-        <div className="w-[95%] px-6 py-10 lg:py-20 lg:mt-6 mx-auto">
-          <div className="xl:flex lg:flex-row-reverse">
-            <div className="xl:w-1/3 pb-10 lg:pb-0">
-              <img
-                className="w-full h-[70%] rounded-lg bg-cover md:max-w-xl lg:max-w-3xl object-cover my-auto"
-                src="/images/profile_image.jpg"
-                alt="Dr. Mustofa Mamun"
-              />
-            </div>
-            <div className="xl:w-1/3 pb-10 mx-4 lg:pb-0">
-              <section className="flex flex-wrap gap-x-2 lg:justify-between text-center justify-center">
-                <div className="lg:text-xl">
-                  <h2 className="leading-loose border-2 px-4 rounded-lg border-green-200 text-green-600 font-semibold flex justify-center md:flex">
-                    Teaching Interests
-                  </h2>
-                  {isEditing ? (
-                    <textarea 
-                      className="mt-4 w-full h-40 p-2 border rounded"
-                      value={editData.teachingInterests.join('\n')}
-                      onChange={(e) => handleListChange(e, 'teachingInterests')}
-                    />
-                  ) : (
-                    <ul className="mt-4 leading-loose text-gray-600 lg:text-left dark:text-gray-300 list-inside">
-                      {profile.teachingInterests.map((item) => <li key={item}>◇ {item}</li>)}
-                    </ul>
-                  )}
-                </div>
-                <div className="lg:text-xl lg:mt-4">
-                  <h2 className="leading-loose border-2 px-4 rounded-lg border-green-200 text-green-600 font-semibold text-center md:flex flex justify-center">
-                    Research Areas
-                  </h2>
-                  {isEditing ? (
-                     <textarea 
-                      className="mt-4 w-full h-32 p-2 border rounded"
-                      value={editData.researchAreas.join('\n')}
-                      onChange={(e) => handleListChange(e, 'researchAreas')}
-                    />
-                  ) : (
-                    <ul className="mt-4 leading-loose text-gray-600 lg:text-left dark:text-gray-300 list-inside">
-                      {profile.researchAreas.map((item) => <li key={item}>◇ {item}</li>)}
-                    </ul>
-                  )}
-                </div>
-              </section>
-            </div>
-            <div className="w-full xl:w-2/3">
+      <ToastContainer position="bottom-right" theme="colored" />
+      <main className="pt-24 md:pt-32">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 animate-fadeInUp">
+            
+            <div className="md:col-span-2 space-y-6">
               <section>
                 {isEditing ? (
                   <input 
@@ -109,33 +68,76 @@ export default function Home({ loggedIn }) {
                     name="name"
                     value={editData.name}
                     onChange={handleChange}
-                    className="text-2xl font-semibold text-gray-800 dark:text-white lg:text-3xl bg-transparent border-b-2 w-full"
+                    className="text-4xl md:text-5xl font-bold tracking-tight text-base-content bg-transparent border-b-2 w-full"
                   />
                 ) : (
-                  <h1 className="text-2xl font-semibold text-gray-800 dark:text-white lg:text-3xl">{profile.name}</h1>
+                  <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-base-content">{profile.name}</h1>
                 )}
+                <p className="mt-2 text-lg text-primary font-medium">{profile.title}</p>
+
                 {isEditing ? (
                   <>
-                    <textarea name="bio1" value={editData.bio1} onChange={handleChange} className="w-full h-24 p-2 mt-4 border rounded" />
-                    <textarea name="bio2" value={editData.bio2} onChange={handleChange} className="w-full h-24 p-2 mt-4 border rounded" />
+                    <textarea name="bio1" value={editData.bio1} onChange={handleChange} className="w-full h-24 p-2 mt-4 border rounded textarea" />
+                    <textarea name="bio2" value={editData.bio2} onChange={handleChange} className="w-full h-24 p-2 mt-4 border rounded textarea" />
                   </>
                 ) : (
-                  <>
-                    <p className="leading-loose text-gray-600 text-lg dark:text-gray-300 mt-4 lg:text-2xl">{profile.bio1}</p>
-                    <p className="leading-loose text-gray-600 text-lg dark:text-gray-300 mt-4 lg:text-2xl">{profile.bio2}</p>
-                  </>
-                )}
-                {loggedIn && (
-                  <div className="mt-4">
-                    {isEditing ? (
-                      <button onClick={handleSave} className="px-4 py-2 bg-green-500 text-white rounded">Save</button>
-                    ) : (
-                      <button onClick={() => setIsEditing(true)} className="px-4 py-2 bg-blue-500 text-white rounded">Edit</button>
-                    )}
+                  <div className="mt-6 prose prose-lg max-w-none text-base-content/80">
+                    <p>{profile.bio1}</p>
+                    <p>{profile.bio2}</p>
                   </div>
                 )}
               </section>
+
+              <section className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                <div>
+                  <h2 className="text-2xl font-bold text-base-content mb-4">Teaching Interests</h2>
+                  {isEditing ? (
+                    <textarea 
+                      className="textarea textarea-bordered w-full h-40"
+                      value={editData.teachingInterests.join('\n')}
+                      onChange={(e) => handleListChange(e, 'teachingInterests')}
+                    />
+                  ) : (
+                    <ul className="space-y-2">
+                      {profile.teachingInterests.map((item) => <li key={item} className="flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-primary" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" /></svg> {item}</li>)}
+                    </ul>
+                  )}
+                </div>
+                <div>
+                  <h2 className="text-2xl font-bold text-base-content mb-4">Research Areas</h2>
+                  {isEditing ? (
+                     <textarea 
+                      className="textarea textarea-bordered w-full h-32"
+                      value={editData.researchAreas.join('\n')}
+                      onChange={(e) => handleListChange(e, 'researchAreas')}
+                    />
+                  ) : (
+                    <ul className="space-y-2">
+                      {profile.researchAreas.map((item) => <li key={item} className="flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-primary" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" /></svg> {item}</li>)}
+                    </ul>
+                  )}
+                </div>
+              </section>
+
             </div>
+
+            <div className="md:col-span-1 flex flex-col items-center">
+              <img
+                className="w-full max-w-xs rounded-2xl shadow-lg"
+                src="/images/profile_image.jpg"
+                alt="Dr. Mustofa Mamun"
+              />
+              {loggedIn && (
+                <div className="mt-6 w-full max-w-xs">
+                  {isEditing ? (
+                    <button onClick={handleSave} className="btn btn-primary w-full">Save Changes</button>
+                  ) : (
+                    <button onClick={() => setIsEditing(true)} className="btn btn-secondary w-full">Edit Profile</button>
+                  )}
+                </div>
+              )}
+            </div>
+
           </div>
         </div>
       </main>

@@ -1,4 +1,3 @@
-
 // src/assets/components/Sidebar.jsx
 import React, { useState, useEffect } from 'react';
 import api from '../../api';
@@ -25,29 +24,38 @@ export default function Sidebar() {
     return acc;
   }, {});
 
+  // Determine which collapse should be open by default
+  const activeUniversity = Object.keys(groupedCourses).find(university =>
+    groupedCourses[university].some(course => location.pathname === course.link)
+  );
+
   return (
-    <aside className="hidden lg:flex min-w-56 mt-20">
-      <div className="fixed max-w-56 border-r-2 border-green-100 px-4 pb-2 rounded-lg">
+    <aside className="hidden lg:block w-72 flex-shrink-0 px-8">
+      <div className="sticky top-24 space-y-4">
         {Object.keys(groupedCourses).map(university => (
-          <div key={university}>
-            <Link to="#">
-              <p className="p-2 mt-6 text-black font-semibold text-center animate-wave-text dark:text-white">
-                {university}
-              </p>
-            </Link>
-            {groupedCourses[university].map((item) => (
-              <Link to={item.link} key={item._id}>
-                <p
-                  className={`p-2 m-2 border-2 mt-4 rounded-lg font-semibold hover:bg-green-300 hover:font-bold ${
-                    location.pathname === item.link
-                      ? 'border-green-500 bg-green-400 text-black'
-                      : 'border-green-200 text-gray-700 dark:text-gray-50'
-                  }`}
-                >
-                  {item.title}
-                </p>
-              </Link>
-            ))}
+          <div 
+            key={university} 
+            className="collapse collapse-arrow rounded-box bg-base-200/10 backdrop-blur-lg border border-base-300/100 shadow-md"
+          >
+            <input type="checkbox" defaultChecked={university === activeUniversity} /> 
+            <div className="collapse-title text-xl font-bold font-serif text-base-content">
+              {university}
+            </div>
+            <div className="collapse-content">
+              <ul className="menu p-0 text-base-content/80 menu-lg">
+                {groupedCourses[university].map((item) => (
+                  <li key={item._id}>
+                    <Link 
+                      to={item.link}
+                      className={`${location.pathname === item.link ? 'active font-semibold' : ''} transition-all duration-200 ease-in-out`}
+                      style={{ whiteSpace: 'normal', height: 'auto', padding: '0.75rem 1rem' }} 
+                    >
+                      <span className="whitespace-normal text-base">{item.code}: {item.title}</span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         ))}
       </div>

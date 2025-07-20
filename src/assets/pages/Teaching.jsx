@@ -57,58 +57,61 @@ const Teaching = ({ loggedIn }) => {
     <>
       <Helmet>
         <title>Teaching | Mustofa Mamun</title>
-        <meta name="description" content="Teaching page of Mustofa Mamun" />
+        <meta name="description" content="Courses taught by Mustofa Mamun" />
       </Helmet>
-      <main className="pb-8">
-        {loading ? (
-          <div className="text-center mt-20">Loading courses...</div>
-        ) : (
-          <>
-            {Object.keys(groupedCourses).map(university => (
-              <div key={university}>
-                <div className="flex justify-center mt-20">
-                  <h1 className="text-xl font-semibold text-gray-800 dark:text-white p-3 px-6 border-2 border-green-200 rounded-lg shadow-md inline-block">
-                    {university}
-                  </h1>
+      <main className="pt-24 md:pt-32 pb-16">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <header className="text-center mb-12 animate-fadeInUp">
+            <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-base-content">Teaching</h1>
+            <p className="mt-4 text-lg text-base-content/70"></p>
+          </header>
+
+          {loading ? (
+            <div className="text-center">Loading courses...</div>
+          ) : (
+            <div className="space-y-16">
+              {Object.keys(groupedCourses).map((university, index) => (
+                <div key={university} className={`animate-fadeInUp`} style={{animationDelay: `${index * 150}ms`}}>
+                  <div className="flex justify-center mb-8">
+                    <h2 className="text-3xl font-bold text-base-content border-b-2 border-primary pb-2">
+                      {university}
+                    </h2>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {groupedCourses[university].map((course) => (
+                      <div key={course._id} className="relative">
+                         <CourseCard
+                          code={course.code}
+                          title={course.title}
+                          image={course.image}
+                          link={course.link}
+                        />
+                        {loggedIn && (
+                          <button
+                            onClick={() => handleDeleteClick(course._id)}
+                            className="absolute top-2 right-2 btn btn-xs btn-circle btn-error"
+                          >
+                            ✕
+                          </button>
+                        )}
+                      </div>
+                    ))}
+                  </div>
                 </div>
-                <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 mt-10 gap-4 mx-auto">
-                  {groupedCourses[university].map((course) => (
-                    <div key={course._id} className="relative">
-                       <CourseCard
-                        code={course.code}
-                        title={course.title}
-                        image={course.image}
-                        link={course.link}
-                      />
-                      {loggedIn && (
-                        <button
-                          onClick={() => handleDeleteClick(course._id)}
-                          className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 text-xs w-6 h-6 flex items-center justify-center"
-                        >
-                          X
-                        </button>
-                      )}
-                    </div>
-                  ))}
+              ))}
+              {loggedIn && (
+                <div className="flex justify-center mt-12 animate-fadeInUp" style={{animationDelay: `${Object.keys(groupedCourses).length * 150}ms`}}>
+                  <Link to="/add-course" className="btn btn-primary btn-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                    </svg>
+                    Add New Course
+                  </Link>
                 </div>
-              </div>
-            ))}
-            {loggedIn && (
-              <div className="flex justify-center mt-10">
-                <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 mx-auto">
-                    <Link to="/add-course">
-                        <div className="card bg-base-100 w-72 shadow-md hover:animate-pulse border-2 hover:border-b-8 hover:border-green-500 border-gray-100 mx-auto h-full flex items-center justify-center">
-                            <div className="card-body p-5 items-center text-center">
-                                <span className="text-6xl font-bold text-green-500">+</span>
-                                <p className="font-semibold text-gray-700 dark:text-gray-100">Add New Course</p>
-                            </div>
-                        </div>
-                    </Link>
-                </div>
-              </div>
-            )}
-          </>
-        )}
+              )}
+            </div>
+          )}
+        </div>
       </main>
       <ConfirmModal
         isOpen={isModalOpen}
