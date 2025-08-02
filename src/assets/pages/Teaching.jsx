@@ -6,6 +6,45 @@ import ConfirmModal from '../components/ConfirmModal';
 import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
 
+// Skeleton component for a single course card
+const SkeletonCard = () => (
+  <div className="card bg-base-200 shadow-xl overflow-hidden">
+    <div className="h-40 bg-base-300"></div> {/* Image placeholder */}
+    <div className="card-body p-6">
+      <div className="h-5 bg-base-300 rounded w-1/4 mb-3"></div> {/* Code placeholder */}
+      <div className="h-6 bg-base-300 rounded w-3/4"></div> {/* Title placeholder */}
+    </div>
+  </div>
+);
+
+// Skeleton component for the entire teaching page content
+const TeachingSkeleton = () => (
+  <div className="space-y-16 animate-pulse">
+    {/* Skeleton for one university group */}
+    <div>
+      <div className="flex justify-center mb-8">
+        <div className="h-10 bg-base-300 rounded w-1/3"></div> {/* University Name Placeholder */}
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <SkeletonCard />
+        <SkeletonCard />
+        <SkeletonCard />
+      </div>
+    </div>
+    {/* Skeleton for a second university group */}
+    <div>
+      <div className="flex justify-center mb-8">
+        <div className="h-10 bg-base-300 rounded w-1/2"></div> {/* University Name Placeholder */}
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <SkeletonCard />
+        <SkeletonCard />
+      </div>
+    </div>
+  </div>
+);
+
+
 const Teaching = ({ loggedIn }) => {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -67,7 +106,7 @@ const Teaching = ({ loggedIn }) => {
           </header>
 
           {loading ? (
-            <div className="text-center">Loading courses...</div>
+            <TeachingSkeleton />
           ) : (
             <div className="space-y-16">
               {Object.keys(groupedCourses).map((university, index) => (
@@ -80,7 +119,7 @@ const Teaching = ({ loggedIn }) => {
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {groupedCourses[university].map((course) => (
                       <div key={course._id} className="relative">
-                         <CourseCard
+                          <CourseCard
                           code={course.code}
                           title={course.title}
                           image={course.image}

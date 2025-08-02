@@ -1,4 +1,3 @@
-// src/assets/components/Sidebar.jsx
 import React, { useState, useEffect } from 'react';
 import api from '../../api';
 import { Link, useLocation } from 'react-router-dom';
@@ -30,14 +29,16 @@ export default function Sidebar() {
   );
 
   return (
-    <aside className="hidden lg:block w-72 flex-shrink-0 px-8">
-      <div className="sticky top-24 space-y-4">
+    <aside className="hidden lg:block w-72 flex-shrink-0 px-8 pt-24 md:pt-32">
+      {/* The sticky container for the content inside the sidebar */}
+      <div className="sticky top-28 max-h-[calc(100vh-8rem)] overflow-y-auto space-y-4 pr-2">
+        
         {Object.keys(groupedCourses).map(university => (
           <div 
             key={university} 
             className="collapse collapse-arrow rounded-box bg-base-200/10 backdrop-blur-lg border border-base-300/100 shadow-md"
           >
-            <input type="checkbox" defaultChecked={university === activeUniversity} /> 
+            <input type="checkbox" defaultChecked={university === activeUniversity || Object.keys(groupedCourses).length === 1} /> 
             <div className="collapse-title text-xl font-bold font-serif text-base-content">
               {university}
             </div>
@@ -48,6 +49,7 @@ export default function Sidebar() {
                     <Link 
                       to={item.link}
                       className={`${location.pathname === item.link ? 'active font-semibold' : ''} transition-all duration-200 ease-in-out`}
+                      // Style for wrapping long course titles
                       style={{ whiteSpace: 'normal', height: 'auto', padding: '0.75rem 1rem' }} 
                     >
                       <span className="whitespace-normal text-base">{item.code}: {item.title}</span>
@@ -58,6 +60,7 @@ export default function Sidebar() {
             </div>
           </div>
         ))}
+        
       </div>
     </aside>
   );

@@ -7,7 +7,69 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 // Define the glass style once to keep it consistent
-const glassCardStyle = "card bg-base-200/10  backdrop-blur-lg border border-base-300/100 shadow-md";
+const glassCardStyle = "card bg-base-200/10  backdrop-blur-lg border border-base-300/100 shadow-md";
+
+// Skeleton Component for the loading state
+const CourseTemplateSkeleton = () => (
+    <main className="flex">
+        <Sidebar />
+        <div className="flex-grow pt-24 md:pt-32 pb-16 animate-pulse">
+            <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <section>
+                    {/* Header Skeleton */}
+                    <div className="h-10 bg-base-300 rounded w-3/4 mb-8"></div>
+                    <div className="space-y-12">
+                        {/* Instructor Info Card Skeleton */}
+                        <div className={glassCardStyle}>
+                            <div className="card-body">
+                                <div className="h-7 bg-base-300 rounded w-1/3 mb-5"></div>
+                                <div className="space-y-3">
+                                    <div className="h-4 bg-base-300 rounded w-1/2"></div>
+                                    <div className="h-4 bg-base-300 rounded w-2/3"></div>
+                                    <div className="h-4 bg-base-300 rounded w-1/2"></div>
+                                    <div className="h-4 bg-base-300 rounded w-1/4"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Sections Card Skeleton */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div className={glassCardStyle}>
+                                <div className="card-body">
+                                    <div className="h-6 bg-base-300 rounded w-1/2 mb-3"></div>
+                                    <div className="h-4 bg-base-300 rounded w-3/4 mb-4"></div>
+                                    <div className="h-9 bg-base-300 rounded w-1/3"></div>
+                                </div>
+                            </div>
+                            <div className={glassCardStyle}>
+                                <div className="card-body">
+                                    <div className="h-6 bg-base-300 rounded w-1/2 mb-3"></div>
+                                    <div className="h-4 bg-base-300 rounded w-3/4 mb-4"></div>
+                                    <div className="h-9 bg-base-300 rounded w-1/3"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Files Card Skeleton */}
+                        <div className={glassCardStyle}>
+                            <div className="card-body p-6">
+                                <div className="h-7 bg-base-300 rounded w-1/4 mb-4"></div>
+                                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                                    <div className="h-12 bg-base-300 rounded-lg"></div>
+                                    <div className="h-12 bg-base-300 rounded-lg"></div>
+                                    <div className="h-12 bg-base-300 rounded-lg"></div>
+                                    <div className="h-12 bg-base-300 rounded-lg"></div>
+                                    <div className="h-12 bg-base-300 rounded-lg"></div>
+                                    <div className="h-12 bg-base-300 rounded-lg"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+);
 
 const CourseTemplate = ({ loggedIn }) => {
     const { courseCode } = useParams();
@@ -128,7 +190,7 @@ const CourseTemplate = ({ loggedIn }) => {
         "ReadingAssignment", "ReadingAssignmentKeys", "ClassProject"
     ];
 
-    if (loading) return <div className="flex justify-center items-center h-screen">Loading course...</div>;
+    if (loading) return <CourseTemplateSkeleton />;
     if (!course) return <div className="text-center mt-20">Course not found.</div>;
 
     const renderSections = () => {
@@ -283,8 +345,8 @@ const CourseTemplate = ({ loggedIn }) => {
                                         {orderedTypes.map(type => groupedFiles[type] && (
                                             <div key={type} className={glassCardStyle}>
                                                 <div className="card-body p-6 ">
-                                                    <h3 className="card-title mb-4  ">{type.replace(/([A-Z])/g, ' $1').trim()}</h3>
-                                                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4  ">
+                                                    <h3 className="card-title mb-4  ">{type.replace(/([A-Z])/g, ' $1').trim()}</h3>
+                                                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4  ">
                                                         {groupedFiles[type].map(file => (
                                                             <a key={file._id} href={file.link} target="_blank" rel="noopener noreferrer" className="btn btn-soft btn-success text-white text-left h-auto py-2 normal-case font-medium">
                                                                 {file.title}

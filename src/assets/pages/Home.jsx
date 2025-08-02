@@ -5,6 +5,57 @@ import api from '../../api';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+// Skeleton Component for Loading State
+const HomeSkeleton = () => (
+  <main className="pt-24 md:pt-32">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 animate-pulse">
+        
+        {/* Left Column (Content) Skeleton */}
+        <div className="md:col-span-2 space-y-10">
+          <section>
+            <div className="h-12 bg-base-300 rounded w-3/4 mb-4"></div>
+            <div className="h-6 bg-base-300 rounded w-1/2 mb-8"></div>
+            <div className="space-y-3">
+              <div className="h-4 bg-base-300 rounded w-full"></div>
+              <div className="h-4 bg-base-300 rounded w-full"></div>
+              <div className="h-4 bg-base-300 rounded w-5/6"></div>
+              <div className="h-4 bg-base-300 rounded w-full mt-4"></div>
+              <div className="h-4 bg-base-300 rounded w-4/5"></div>
+            </div>
+          </section>
+
+          <section className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+            <div>
+              <div className="h-8 bg-base-300 rounded w-1/2 mb-4"></div>
+              <div className="space-y-3">
+                <div className="h-5 bg-base-300 rounded w-full"></div>
+                <div className="h-5 bg-base-300 rounded w-5/6"></div>
+                <div className="h-5 bg-base-300 rounded w-full"></div>
+              </div>
+            </div>
+            <div>
+              <div className="h-8 bg-base-300 rounded w-1/2 mb-4"></div>
+              <div className="space-y-3">
+                <div className="h-5 bg-base-300 rounded w-full"></div>
+                <div className="h-5 bg-base-300 rounded w-4/5"></div>
+                <div className="h-5 bg-base-300 rounded w-full"></div>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        {/* Right Column (Image) Skeleton */}
+        <div className="md:col-span-1 flex flex-col items-center">
+          <div className="w-full max-w-xs h-80 md:h-96 bg-base-300 rounded-2xl"></div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+);
+
+
 export default function Home({ loggedIn }) {
   const [profile, setProfile] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -20,9 +71,9 @@ export default function Home({ loggedIn }) {
     }
   };
 
-  useEffect(() => {
-    fetchProfile();
-  }, []);
+    useEffect(() => {
+      fetchProfile();
+    }, []);
 
   const handleSave = async () => {
     const token = localStorage.getItem('token');
@@ -47,7 +98,7 @@ export default function Home({ loggedIn }) {
     setEditData(prev => ({ ...prev, [listName]: e.target.value.split('\n') }));
   };
 
-  if (!profile) return <div className="flex justify-center items-center h-screen">Loading...</div>;
+  if (!profile) return <HomeSkeleton />;
 
   return (
     <>
