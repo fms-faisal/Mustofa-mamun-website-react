@@ -7,7 +7,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 // Define the glass style once to keep it consistent
-const glassCardStyle = "card bg-base-200/10  backdrop-blur-lg border border-base-300/100 shadow-md";
+const glassCardStyle = "card bg-base-200/10 backdrop-blur-lg border border-base-300/100 shadow-md";
 
 // Skeleton Component for the loading state
 const CourseTemplateSkeleton = () => (
@@ -71,6 +71,14 @@ const CourseTemplateSkeleton = () => (
     </main>
 );
 
+// Helper function to format the course code for display
+const formatCourseCode = (code) => {
+  if (!code) return '';
+  // This regex finds the first occurrence of a letter followed by a number
+  // and inserts a space between them.
+  return code.replace(/([a-zA-Z])(\d)/, '$1 $2');
+};
+
 const CourseTemplate = ({ loggedIn }) => {
     const { courseCode } = useParams();
     const [course, setCourse] = useState(null);
@@ -79,7 +87,6 @@ const CourseTemplate = ({ loggedIn }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [editDetails, setEditDetails] = useState({ tas: [], sections: [], textbooks: [] });
 
-    // ... All data fetching and handler functions are here and unchanged ...
     const fetchCourseData = useCallback(async () => {
         setLoading(true);
         try {
@@ -224,8 +231,8 @@ const CourseTemplate = ({ loggedIn }) => {
     return (
         <>
             <Helmet>
-                <title>{course.code} | Mustofa Mamun</title>
-                <meta name="description" content={`${course.code} - ${course.title} course page`} />
+                <title>{formatCourseCode(course.code)} | Mustofa Mamun</title>
+                <meta name="description" content={`${formatCourseCode(course.code)} - ${course.title} course page`} />
             </Helmet>
             <ToastContainer position="bottom-right" theme="colored" />
             <main className="flex">
@@ -235,7 +242,7 @@ const CourseTemplate = ({ loggedIn }) => {
                         <section className="animate-fadeInUp">
                             <header className="flex justify-between items-start mb-8">
                                 <div>
-                                    <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-base-content">{course.code} - {course.title}</h1>
+                                    <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-base-content">{formatCourseCode(course.code)} - {course.title}</h1>
                                 </div>
                                 {loggedIn && (
                                     <div className="flex-shrink-0">
@@ -308,7 +315,7 @@ const CourseTemplate = ({ loggedIn }) => {
                                             <button onClick={addTextbook} className="btn btn-sm btn-success text-white mt-4">Add Textbook</button>
                                         </div>
                                     </div>
-                               </div>
+                                </div>
                             ) : (
                                 <div className="space-y-12">
                                     <div className={glassCardStyle}>
@@ -345,8 +352,8 @@ const CourseTemplate = ({ loggedIn }) => {
                                         {orderedTypes.map(type => groupedFiles[type] && (
                                             <div key={type} className={glassCardStyle}>
                                                 <div className="card-body p-6 ">
-                                                    <h3 className="card-title mb-4  ">{type.replace(/([A-Z])/g, ' $1').trim()}</h3>
-                                                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4  ">
+                                                    <h3 className="card-title mb-4 ">{type.replace(/([A-Z])/g, ' $1').trim()}</h3>
+                                                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4  ">
                                                         {groupedFiles[type].map(file => (
                                                             <a key={file._id} href={file.link} target="_blank" rel="noopener noreferrer" className="btn btn-soft btn-success text-white text-left h-auto py-2 normal-case font-medium">
                                                                 {file.title}

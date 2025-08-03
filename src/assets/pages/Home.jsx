@@ -109,7 +109,7 @@ export default function Home({ loggedIn }) {
       <ToastContainer position="bottom-right" theme="colored" />
       <main className="pt-24 md:pt-32">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 animate-fadeInUp">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 animate-fadeInUp lg:text-xl">
             
             <div className="md:col-span-2 space-y-6">
               <section>
@@ -134,7 +134,7 @@ export default function Home({ loggedIn }) {
                 ) : (
                   <div className="mt-6 prose prose-lg max-w-none text-base-content/80">
                     <p>{profile.bio1}</p>
-                    <p>{profile.bio2}</p>
+                    <p className='mt-4'>{profile.bio2}</p>
                   </div>
                 )}
               </section>
@@ -174,7 +174,7 @@ export default function Home({ loggedIn }) {
 
             <div className="md:col-span-1 flex flex-col items-center">
               <img
-                className="w-full max-w-xs rounded-2xl shadow-lg"
+                className="w-full max-w-xs h-80 md:h-96 bg-base-300 rounded-2xl object-cover lg:mt-16"
                 src="/images/profile_image.jpg"
                 alt="Dr. Mustofa Mamun"
               />

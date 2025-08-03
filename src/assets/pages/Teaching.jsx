@@ -44,6 +44,16 @@ const TeachingSkeleton = () => (
   </div>
 );
 
+// Helper function to format the course code for display
+const formatCourseCode = (code) => {
+  if (!code) return '';
+  // This regex finds the first occurrence of a letter followed by a number
+  // and inserts a space between them.
+  // e.g., "Econ2110" becomes "Econ 2110"
+  // e.g., "OnlineEcon2110" becomes "OnlineEcon 2110"
+  return code.replace(/([a-zA-Z])(\d)/, '$1 $2');
+};
+
 
 const Teaching = ({ loggedIn }) => {
   const [courses, setCourses] = useState([]);
@@ -120,11 +130,11 @@ const Teaching = ({ loggedIn }) => {
                     {groupedCourses[university].map((course) => (
                       <div key={course._id} className="relative">
                           <CourseCard
-                          code={course.code}
-                          title={course.title}
-                          image={course.image}
-                          link={course.link}
-                        />
+                            code={formatCourseCode(course.code)}
+                            title={course.title}
+                            image={course.image}
+                            link={course.link}
+                          />
                         {loggedIn && (
                           <button
                             onClick={() => handleDeleteClick(course._id)}
