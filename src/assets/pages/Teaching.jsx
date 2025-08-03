@@ -44,15 +44,15 @@ const TeachingSkeleton = () => (
   </div>
 );
 
-// Helper function to format the course code for display
+// Helper function to format the course code for display in uppercase
 const formatCourseCode = (code) => {
   if (!code) return '';
-  // This regex finds the first occurrence of a letter followed by a number
-  // and inserts a space between them.
-  // e.g., "Econ2110" becomes "Econ 2110"
-  // e.g., "OnlineEcon2110" becomes "OnlineEcon 2110"
-  return code.replace(/([a-zA-Z])(\d)/, '$1 $2');
+  // Convert to uppercase first
+  const upperCode = code.toUpperCase();
+  // Insert space between the first letter and number
+  return upperCode.replace(/([A-Z])(\d)/, '$1 $2');
 };
+
 
 
 const Teaching = ({ loggedIn }) => {
@@ -112,7 +112,7 @@ const Teaching = ({ loggedIn }) => {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <header className="text-center mb-12 animate-fadeInUp">
             <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-base-content">Teaching</h1>
-            <p className="mt-4 text-lg text-base-content/70"></p>
+            <p className="mt-4 max-w-[70%] mx-auto text-lg text-base-content/70">My teaching objective is to equip students with the ability to explain economic issues intuitively, mathematically, and graphically by the end of the semester.</p>
           </header>
 
           {loading ? (
