@@ -111,8 +111,8 @@ const Teaching = ({ loggedIn }) => {
       <main className="pt-24 md:pt-32 pb-16">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <header className="text-center mb-12 animate-fadeInUp">
-            <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-base-content">Teaching</h1>
-            <p className="mt-4 max-w-[70%] mx-auto text-lg text-base-content/70">My teaching objective is to equip students with the ability to explain economic issues intuitively, mathematically, and graphically by the end of the semester.</p>
+            <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-base-content">Teaching Philosophy</h1>
+            <p className="mt-4 lg:max-w-[70%] lg:mx-auto text-lg text-base-content/70">I aim to equip my students with the ability to explain economic issues intuitively, mathematically, and graphically by the end of the semester.</p>
           </header>
 
           {loading ? (
@@ -128,20 +128,27 @@ const Teaching = ({ loggedIn }) => {
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {groupedCourses[university].map((course) => (
-                      <div key={course._id} className="relative">
-                          <CourseCard
-                            code={formatCourseCode(course.code)}
-                            title={course.title}
-                            image={course.image}
-                            link={course.link}
-                          />
+                      <div key={course._id} className="relative group">
+                        <CourseCard
+                          code={formatCourseCode(course.code)}
+                          title={course.title}
+                          image={course.image}
+                          link={course.link}
+                        />
                         {loggedIn && (
-                          <button
-                            onClick={() => handleDeleteClick(course._id)}
-                            className="absolute top-2 right-2 btn btn-xs btn-circle btn-error"
-                          >
-                            ✕
-                          </button>
+                          <div className="absolute top-2 right-2 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                            {/* Edit Button */}
+                            <Link to={`/edit-course/${course._id}`} className="btn btn-xs btn-circle btn-info">
+                              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.5L15.232 5.232z" /></svg>
+                            </Link>
+                            {/* Delete Button */}
+                            <button
+                              onClick={() => handleDeleteClick(course._id)}
+                              className="btn btn-xs btn-circle btn-error"
+                            >
+                              ✕
+                            </button>
+                          </div>
                         )}
                       </div>
                     ))}

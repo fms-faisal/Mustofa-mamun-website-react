@@ -74,8 +74,6 @@ const CourseTemplateSkeleton = () => (
 // Helper function to format the course code for display
 const formatCourseCode = (code) => {
   if (!code) return '';
-  // This regex finds the first occurrence of a letter followed by a number
-  // and inserts a space between them.
   return code.replace(/([a-zA-Z])(\d)/, '$1 $2');
 };
 
@@ -85,6 +83,7 @@ const CourseTemplate = ({ loggedIn }) => {
     const [files, setFiles] = useState([]);
     const [loading, setLoading] = useState(true);
     const [isEditing, setIsEditing] = useState(false);
+    const [isUploading, setIsUploading] = useState(false); // New state for upload status
     const [editDetails, setEditDetails] = useState({ tas: [], sections: [], textbooks: [] });
 
     const fetchCourseData = useCallback(async () => {
@@ -92,7 +91,10 @@ const CourseTemplate = ({ loggedIn }) => {
         try {
             const courseRes = await api.get(`/courses/${courseCode}`);
             setCourse(courseRes.data);
-            setEditDetails(courseRes.data.details || { tas: [], sections: [], textbooks: [] });
+            // Initialize sections with an empty syllabusFile property
+            const sections = (courseRes.data.details?.sections || []).map(s => ({...s, syllabusFile: null}));
+            setEditDetails({ ...courseRes.data.details, sections: sections } || { tas: [], sections: [], textbooks: [] });
+
             const filesRes = await api.get("/files", {
                 params: { course: courseCode.toLowerCase() }
             });
@@ -119,6 +121,17 @@ const CourseTemplate = ({ loggedIn }) => {
         sections[index] = { ...sections[index], [name]: value };
         setEditDetails(prev => ({ ...prev, sections }));
     };
+    
+    // New handler for syllabus file changes
+    const handleSyllabusFileChange = (sectionIndex, e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const sections = [...editDetails.sections];
+        sections[sectionIndex].syllabusFile = file; // Store the file object
+        // Optionally, you can display the file name in the UI
+        sections[sectionIndex].syllabus = file.name; // Show new file name
+        setEditDetails(prev => ({ ...prev, sections }));
+    };
 
     const handleTaChange = (sectionIndex, taIndex, e) => {
         const { name, value } = e.target;
@@ -137,7 +150,7 @@ const CourseTemplate = ({ loggedIn }) => {
     }
 
     const addSection = () => {
-        setEditDetails(prev => ({ ...prev, sections: [...(prev.sections || []), { sectionCode: '', schedule: '', syllabus: '', tas: [] }] }));
+        setEditDetails(prev => ({ ...prev, sections: [...(prev.sections || []), { sectionCode: '', schedule: '', syllabus: '', syllabusFile: null, tas: [] }] }));
     };
 
     const removeSection = (index) => {
@@ -172,10 +185,30 @@ const CourseTemplate = ({ loggedIn }) => {
     }
 
     const handleSave = async () => {
+        setIsUploading(true); // Set uploading state to true
         const token = localStorage.getItem('token');
+        const formData = new FormData();
+
+        // Separate details and files
+        const detailsToSend = { ...editDetails, sections: [] };
+
+        editDetails.sections.forEach((section, index) => {
+            const { syllabusFile, ...sectionDetails } = section;
+            detailsToSend.sections.push(sectionDetails);
+            if (syllabusFile) {
+                // Append file with a unique field name
+                formData.append(`syllabus_${index}`, syllabusFile, syllabusFile.name);
+            }
+        });
+
+        formData.append('details', JSON.stringify(detailsToSend));
+
         try {
-            await api.put(`/courses/${course._id}`, { details: editDetails }, {
-                headers: { Authorization: `Bearer ${token}` }
+            await api.put(`/courses/${course._id}`, formData, {
+                headers: { 
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'multipart/form-data'
+                }
             });
             toast.success("Course details updated!");
             setIsEditing(false);
@@ -183,6 +216,8 @@ const CourseTemplate = ({ loggedIn }) => {
         } catch (error) {
             toast.error("Failed to update details.");
             console.error("Error updating course details:", error);
+        } finally {
+            setIsUploading(false); // Reset uploading state
         }
     };
 
@@ -201,7 +236,7 @@ const CourseTemplate = ({ loggedIn }) => {
     if (!course) return <div className="text-center mt-20">Course not found.</div>;
 
     const renderSections = () => {
-        const sections = (course.details.sections) || [];
+        const sections = (course?.details?.sections) || [];
         if (sections.length === 0) return null;
 
         return (
@@ -211,7 +246,8 @@ const CourseTemplate = ({ loggedIn }) => {
                         <div className="card-body">
                             <h3 className="card-title">{section.sectionCode}</h3>
                             <p>{section.schedule}</p>
-                            <a href={section.syllabus} target="_blank" rel="noopener noreferrer" className="btn btn-primary text-white btn-sm mt-2">Syllabus</a>
+                            {/* The syllabus link will now point to the uploaded file */}
+                            {section.syllabus && <a href={section.syllabus} target="_blank" rel="noopener noreferrer" className="btn btn-primary text-white btn-sm mt-2">Syllabus</a>}
                             {(section.tas || []).map((ta, taIndex) => (
                                 <div key={taIndex} className="mt-4 pt-4 border-t border-base-300/50">
                                     <p className="font-semibold">TA: {ta.name}</p>
@@ -247,7 +283,9 @@ const CourseTemplate = ({ loggedIn }) => {
                                 {loggedIn && (
                                     <div className="flex-shrink-0">
                                         {isEditing ? (
-                                            <button onClick={handleSave} className="btn btn-sm btn-success text-white">Save</button>
+                                            <button onClick={handleSave} className="btn btn-sm btn-success text-white" disabled={isUploading}>
+                                                {isUploading ? 'Saving...' : 'Save'}
+                                            </button>
                                         ) : (
                                             <button onClick={() => setIsEditing(true)} className="btn btn-sm btn-success text-white">Edit Page</button>
                                         )}
@@ -276,7 +314,16 @@ const CourseTemplate = ({ loggedIn }) => {
                                                     <h3 className="font-semibold">Section {sectionIndex + 1}</h3>
                                                     <input type="text" name="sectionCode" value={section.sectionCode || ''} onChange={(e) => handleSectionChange(sectionIndex, e)} placeholder="Section Code (e.g., ECON 2110 - 001)" className="input input-bordered w-full" />
                                                     <input type="text" name="schedule" value={section.schedule || ''} onChange={(e) => handleSectionChange(sectionIndex, e)} placeholder="Schedule (e.g., MWF at 10:00-10:50 am)" className="input input-bordered w-full" />
-                                                    <input type="text" name="syllabus" value={section.syllabus || ''} onChange={(e) => handleSectionChange(sectionIndex, e)} placeholder="Syllabus Link" className="input input-bordered w-full" />
+                                                    
+                                                    {/* Syllabus File Upload */}
+                                                    <div className="form-control w-full">
+                                                        <label className="label">
+                                                            <span className="label-text">Syllabus PDF</span>
+                                                        </label>
+                                                        <input type="file" name="syllabusFile" onChange={(e) => handleSyllabusFileChange(sectionIndex, e)} className="file-input file-input-bordered w-full" accept=".pdf" />
+                                                        {section.syllabus && !section.syllabusFile && <span className="text-xs mt-1">Current: <a href={section.syllabus} target="_blank" rel="noopener noreferrer" className="link">{section.syllabus.split('/').pop()}</a></span>}
+                                                        {section.syllabusFile && <span className="text-xs mt-1">New: {section.syllabusFile.name}</span>}
+                                                    </div>
                                                     
                                                     <h4 className="font-semibold text-md pt-4">TAs for this section</h4>
                                                     {(section.tas || []).map((ta, taIndex) => (
@@ -321,26 +368,28 @@ const CourseTemplate = ({ loggedIn }) => {
                                     <div className={glassCardStyle}>
                                         <div className="card-body">
                                             <h2 className="card-title">Instructor Information</h2>
-                                            <p><strong>{course.details.instructor}</strong></p>
-                                            {course.details.office && <p>Office: {course.details.office}</p>}
-                                            {course.details.hours && <p>Drop-in hours: {course.details.hours}</p>}
-                                            {course.details.email && <p>Email: <a href={`mailto:${course.details.email}`} className="link link-hover">{course.details.email}</a></p>}
-                                            {course.details.zoom && <p>Zoom: <a href={course.details.zoom} target="_blank" rel="noopener noreferrer" className="link link-hover">Link</a></p>}
+                                            <p><strong>{course?.details?.instructor}</strong></p>
+                                            {course?.details?.office && <p>Office: {course.details.office}</p>}
+                                            {course?.details?.hours && <p>Drop-in hours: {course.details.hours}</p>}
+                                            {course?.details?.email && <p>Email: <a href={`mailto:${course.details.email}`} className="link link-hover">{course.details.email}</a></p>}
+                                            {course?.details?.zoom && <p>Zoom: <a href={course.details.zoom} target="_blank" rel="noopener noreferrer" className="link link-hover">Link</a></p>}
                                         </div>
                                     </div>
                                     
                                     {renderSections()}
 
-                                    {(course.details.textbooks || []).length > 0 && (
+                                    {(course?.details?.textbooks || []).length > 0 && (
                                         <div className={glassCardStyle}>
                                             <div className="card-body">
                                                 <h2 className="card-title">Textbooks</h2>
                                                 <ul className="list-disc list-inside space-y-2">
-                                                    {course.details.textbooks.map((book, index) => (
-                                                        <li key={index}>
-                                                            {book.description} <span className={`badge ${book.status === 'Optional' ? 'badge-info' : 'badge-warning'}`}>{book.status || 'Required'}</span>
-                                                        </li>
-                                                    ))}
+                                                    {course?.details?.textbooks?.map((book, index) => {
+                                                        return (
+                                                            <li key={index}>
+                                                                {book.description} <span className={`badge ${book.status === 'Optional' ? 'badge-info' : 'badge-warning'}`}>{book.status || 'Required'}</span>
+                                                            </li>
+                                                        );
+                                                    })}
                                                 </ul>
                                             </div>
                                         </div>

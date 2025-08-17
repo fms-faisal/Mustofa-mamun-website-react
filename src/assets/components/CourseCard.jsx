@@ -14,7 +14,7 @@ export default function CourseCard({ code, title, image, link, isOnline }) {
           }}
           className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
         />
-        <div className="absolute inset-0 bg-black/20"></div>
+        {/* <div className="absolute inset-0 bg-black/20"></div> */}
       </figure>
       <div className="card-body p-6">
         <h2 className="card-title text-primary font-['Roboto_Slab']">{code}</h2>

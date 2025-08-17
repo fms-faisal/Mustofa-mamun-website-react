@@ -9,6 +9,7 @@ import CourseFiles from './assets/pages/CourseFiles';
 import Login from './assets/components/Login';
 import AddCourse from './assets/pages/AddCourse';
 import CourseTemplate from './assets/pages/CourseTemplate';
+import EditCourse from './assets/components/EditCourse'; // Added import for EditCourse
 
 export default function App() {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -30,8 +31,13 @@ export default function App() {
         <Route path="/pages/teaching.html" element={<Teaching loggedIn={loggedIn} />} />
         <Route path="/courses/:courseCode" element={<CourseTemplate loggedIn={loggedIn} />} />
         <Route path="/courses/Fordham/:courseCode" element={<CourseTemplate loggedIn={loggedIn} />} />
+        
+        {/* Protected Routes */}
         <Route path="/add-files" element={loggedIn ? <CourseFiles /> : <Home />} />
         <Route path="/add-course" element={loggedIn ? <AddCourse /> : <Home />} />
+        {/* Added route for editing a course */}
+        <Route path="/edit-course/:id" element={loggedIn ? <EditCourse /> : <Home />} />
+        
         <Route path="/login" element={<Login setLoggedIn={setLoggedIn} />} />
       </Routes>
     </Router>
